@@ -1,0 +1,138 @@
+/* ==============================
+   全站基础样式
+   ============================== */
+
+html
+  scroll-behavior smooth
+
+body
+  color #2c3e50
+  background #ffffff
+
+
+/* ==============================
+   顶部导航栏
+   ============================== */
+
+.navbar
+  box-shadow 0 1px 8px rgba(0, 0, 0, 0.04)
+  border-bottom 1px solid #f0f0f0
+
+.navbar .site-name
+  font-weight 600
+
+.navbar .links
+  background transparent
+
+
+/* ==============================
+   导航链接
+   ============================== */
+
+.nav-links a
+  transition color .2s ease
+
+.nav-links a:hover
+  color #3eaf7c
+
+
+/* ==============================
+   正文
+   ============================== */
+
+.theme-default-content
+  font-size 16px
+  line-height 1.85
+
+.theme-default-content p
+  margin 1.1em 0
+
+
+/* ==============================
+   标题
+   ============================== */
+
+.theme-default-content h2
+  margin-top 2.2em
+  padding-bottom .45rem
+  border-bottom 1px solid #eaecef
+
+.theme-default-content h3
+  margin-top 1.8em
+
+
+/* ==============================
+   链接
+   ============================== */
+
+.theme-default-content a
+  text-decoration none
+
+.theme-default-content a:hover
+  text-decoration underline
+
+
+/* ==============================
+   行内代码
+   ============================== */
+
+.theme-default-content code
+  padding .2rem .4rem
+  border-radius 4px
+
+
+/* 防止代码块内部 code 被上面的行内代码影响 */
+
+.theme-default-content pre code
+  padding 0
+  border-radius 0
+
+
+/* ==============================
+   引用
+   ============================== */
+
+.theme-default-content blockquote
+  margin 1.5rem 0
+  padding .8rem 1.2rem
+
+  border-left 4px solid #3eaf7c
+
+  background #f8f9fa
+
+  color #666
+
+
+/* ==============================
+   图片
+   ============================== */
+
+.theme-default-content img
+  border-radius 6px
+
+
+/* ==============================
+   页面切换动画
+   ============================== */
+
+.page
+  animation pageFadeIn .25s ease
+
+@keyframes pageFadeIn
+  from
+    opacity 0
+    transform translateY(4px)
+
+  to
+    opacity 1
+    transform translateY(0)
+
+
+/* ==============================
+   手机端
+   ============================== */
+
+@media (max-width: 719px)
+  .theme-default-content
+    font-size 15px
+    line-height 1.8
