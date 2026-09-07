@@ -1,4 +1,6 @@
 module.exports = {
+  base: '/bolg-l/',
+
   title: '我的博客',
   description: '我的个人技术博客',
 
