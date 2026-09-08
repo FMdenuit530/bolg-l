@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fmdenuit530.github.io/bolg-l/sitemap.xml

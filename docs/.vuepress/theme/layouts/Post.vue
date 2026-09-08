@@ -4,29 +4,33 @@
       <!-- =========================
            阅读进度条
            ========================= -->
-
       <div class="reading-progress">
-        <div class="reading-progress-bar" :style="{ width: readingProgress + '%' }"></div>
+        <div
+          class="reading-progress-bar"
+          :style="{
+            width: readingProgress + '%',
+          }"
+        ></div>
       </div>
 
       <!-- =========================
            返回顶部
            ========================= -->
-
-      <button v-show="showBackTop" class="back-top" type="button" @click="backToTop" aria-label="返回顶部">↑</button>
+      <button v-show="showBackTop" class="back-top" type="button" aria-label="返回顶部" @click="backToTop">↑</button>
 
       <!-- =========================
            文章头部
            ========================= -->
-
       <div class="post-header">
         <div class="post-header-inner">
+          <!-- 文章标题 -->
           <h1>
             {{ $page.title }}
           </h1>
 
-          <!-- 日期 / 分类 -->
-
+          <!-- =====================
+               日期 / 分类
+               ===================== -->
           <div class="post-meta">
             <span v-if="$page.frontmatter.date" class="post-date">
               {{ formatDate($page.frontmatter.date) }}
@@ -41,8 +45,9 @@
             </span>
           </div>
 
-          <!-- 标签 -->
-
+          <!-- =====================
+               标签
+               ===================== -->
           <div v-if="$page.frontmatter.tags" class="post-tags">
             <router-link v-for="tag in $page.frontmatter.tags" :key="tag" :to="getTagPath(tag)" class="tag"> # {{ tag }} </router-link>
           </div>
@@ -52,7 +57,6 @@
       <!-- =========================
            文章目录
            ========================= -->
-
       <aside v-if="$page.headers && $page.headers.length" class="post-toc">
         <div class="toc-title">文章目录</div>
 
@@ -67,13 +71,11 @@
     </template>
 
     <!-- =========================
-         文章底部上一篇 / 下一篇
+         上一篇 / 下一篇
          ========================= -->
-
     <template slot="page-bottom">
       <div class="post-navigation">
         <!-- 上一篇 -->
-
         <router-link v-if="previousPost" :to="previousPost.path" class="post-navigation-card previous">
           <div class="navigation-label">← 上一篇</div>
 
@@ -85,7 +87,6 @@
         <div v-else class="post-navigation-placeholder"></div>
 
         <!-- 下一篇 -->
-
         <router-link v-if="nextPost" :to="nextPost.path" class="post-navigation-card next">
           <div class="navigation-label">下一篇 →</div>
 
@@ -108,51 +109,78 @@ export default {
     ParentLayout,
   },
 
-  /* =========================
-     页面数据
-     ========================= */
-
+  /*
+   * =========================
+   * 页面数据
+   * =========================
+   */
   data() {
     return {
-      // 阅读进度
+      /*
+       * 阅读进度
+       */
       readingProgress: 0,
 
-      // 是否显示返回顶部
+      /*
+       * 是否显示返回顶部
+       */
       showBackTop: false,
     }
   },
 
-  /* =========================
-     计算属性
-     ========================= */
-
+  /*
+   * =========================
+   * 计算属性
+   * =========================
+   */
   computed: {
+    /*
+     * =====================
+     * 所有文章
+     * =====================
+     */
     blogPosts() {
       return this.$site.pages
+
         .filter((page) => {
-          // 只处理真正的文章页面
           return page.path.startsWith('/posts/') && page.frontmatter && page.frontmatter.date
         })
+
         .sort((a, b) => {
           const dateA = new Date(a.frontmatter.date).getTime()
+
           const dateB = new Date(b.frontmatter.date).getTime()
 
-          // 日期相同的时候，用路径保证顺序稳定
+          /*
+           * 日期相同，
+           * 使用路径保证稳定排序
+           */
           if (dateA === dateB) {
             return a.path.localeCompare(b.path)
           }
 
-          // 最新文章在前
+          /*
+           * 最新文章在前
+           */
           return dateB - dateA
         })
     },
 
+    /*
+     * =====================
+     * 当前文章索引
+     * =====================
+     */
     currentPostIndex() {
       return this.blogPosts.findIndex((post) => post.path === this.$page.path)
     },
 
+    /*
+     * =====================
+     * 上一篇
+     * =====================
+     */
     previousPost() {
-      // 当前文章后面的文章 = 更旧的文章
       if (this.currentPostIndex === -1 || this.currentPostIndex >= this.blogPosts.length - 1) {
         return null
       }
@@ -160,8 +188,12 @@ export default {
       return this.blogPosts[this.currentPostIndex + 1]
     },
 
+    /*
+     * =====================
+     * 下一篇
+     * =====================
+     */
     nextPost() {
-      // 当前文章前面的文章 = 更新的文章
       if (this.currentPostIndex <= 0) {
         return null
       }
@@ -170,34 +202,40 @@ export default {
     },
   },
 
-  /* =========================
-     页面加载
-     ========================= */
-
+  /*
+   * =========================
+   * 页面加载
+   * =========================
+   */
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
 
     this.handleScroll()
   },
 
-  /* =========================
-     页面销毁
-     ========================= */
-
+  /*
+   * =========================
+   * 页面销毁
+   * =========================
+   */
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll)
   },
 
   methods: {
-    /* =========================
-       阅读进度
-       ========================= */
-
+    /*
+     * =========================
+     * 阅读进度
+     * =========================
+     */
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
 
       const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
+      /*
+       * 页面没有滚动空间
+       */
       if (documentHeight <= 0) {
         this.readingProgress = 0
 
@@ -206,27 +244,34 @@ export default {
         return
       }
 
+      /*
+       * 当前阅读百分比
+       */
       this.readingProgress = Math.min(100, Math.max(0, (scrollTop / documentHeight) * 100))
 
+      /*
+       * 返回顶部显示条件
+       */
       this.showBackTop = scrollTop > 300
     },
 
-    /* =========================
-       返回顶部
-       ========================= */
-
+    /*
+     * =========================
+     * 返回顶部
+     * =========================
+     */
     backToTop() {
       window.scrollTo({
         top: 0,
-
         behavior: 'smooth',
       })
     },
 
-    /* =========================
-       日期格式化
-       ========================= */
-
+    /*
+     * =========================
+     * 日期格式化
+     * =========================
+     */
     formatDate(date) {
       if (!date) {
         return ''
@@ -247,18 +292,20 @@ export default {
       return `${year}-${month}-${day}`
     },
 
-    /* =========================
-       分类地址
-       ========================= */
-
+    /*
+     * =========================
+     * 分类地址
+     * =========================
+     */
     getCategoryPath(category) {
       return `/category/${encodeURIComponent(category)}/`
     },
 
-    /* =========================
-       标签地址
-       ========================= */
-
+    /*
+     * =========================
+     * 标签地址
+     * =========================
+     */
     getTagPath(tag) {
       return `/tags/${encodeURIComponent(tag)}/`
     },
@@ -267,25 +314,49 @@ export default {
 </script>
 
 <style scoped>
-/* =========================
-   文章头部
-   ========================= */
+/* ============================================================
+ * 文章头部
+ * ============================================================ */
 
 .post-header {
   width: 100%;
 }
+
+/*
+ * ============================================================
+ * 文章头部内部
+ *
+ * ★ 这里是这次修复的核心
+ *
+ * VuePress 顶部 navbar 是固定定位，
+ * 所以文章标题必须主动避开它。
+ * ============================================================ */
 
 .post-header-inner {
   max-width: 820px;
 
   margin: 0 auto;
 
-  padding: 60px 40px 20px;
+  /*
+   * 原来：
+   *
+   * padding: 60px 40px 20px;
+   *
+   * 现在：
+   *
+   * 顶部增加到 92px
+   */
+  padding: 92px 40px 20px;
 
   box-sizing: border-box;
 
   text-align: left;
 }
+
+/*
+ * ============================================================
+ * 文章标题
+ * ============================================================ */
 
 .post-header-inner h1 {
   margin-top: 0;
@@ -299,16 +370,24 @@ export default {
   line-height: 1.4;
 
   text-align: left;
+
+  /*
+   * 防止超长标题撑破。
+   */
+  overflow-wrap: anywhere;
 }
 
-/* =========================
-   日期和分类
-   ========================= */
+/*
+ * ============================================================
+ * 日期 / 分类
+ * ============================================================ */
 
 .post-meta {
   display: flex;
 
   align-items: center;
+
+  flex-wrap: wrap;
 
   color: #999;
 
@@ -337,9 +416,10 @@ export default {
   color: #ccc;
 }
 
-/* =========================
-   标签
-   ========================= */
+/*
+ * ============================================================
+ * 标签
+ * ============================================================ */
 
 .post-tags {
   display: flex;
@@ -373,11 +453,14 @@ export default {
   background: #e8f5ef;
 
   color: #3eaf7c;
+
+  text-decoration: none;
 }
 
-/* =========================
-   文章目录
-   ========================= */
+/*
+ * ============================================================
+ * 文章目录
+ * ============================================================ */
 
 .post-toc {
   position: fixed;
@@ -388,6 +471,8 @@ export default {
 
   width: 220px;
 
+  max-height: calc(100vh - 160px);
+
   padding: 18px;
 
   border-left: 1px solid #eaecef;
@@ -395,6 +480,8 @@ export default {
   background: #fff;
 
   box-sizing: border-box;
+
+  overflow-y: auto;
 }
 
 .toc-title {
@@ -437,8 +524,6 @@ export default {
   color: #3eaf7c;
 }
 
-/* 二级标题 */
-
 .post-toc .toc-level-3 {
   padding-left: 12px;
 }
@@ -447,9 +532,10 @@ export default {
   padding-left: 24px;
 }
 
-/* =========================
-   阅读进度条
-   ========================= */
+/*
+ * ============================================================
+ * 阅读进度条
+ * ============================================================ */
 
 .reading-progress {
   position: fixed;
@@ -475,9 +561,10 @@ export default {
   transition: width 0.1s ease;
 }
 
-/* =========================
-   返回顶部
-   ========================= */
+/*
+ * ============================================================
+ * 返回顶部
+ * ============================================================ */
 
 .back-top {
   position: fixed;
@@ -523,9 +610,10 @@ export default {
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* =========================
-   上一篇 / 下一篇
-   ========================= */
+/*
+ * ============================================================
+ * 上一篇 / 下一篇
+ * ============================================================ */
 
 .post-navigation {
   max-width: 820px;
@@ -599,18 +687,40 @@ export default {
   min-height: 95px;
 }
 
-/* =========================
-   手机端
-   ========================= */
+/*
+ * ============================================================
+ * 手机端
+ * ============================================================ */
 
 @media (max-width: 719px) {
+  /*
+   * ======================================
+   * ★ 手机端核心修复
+   * ======================================
+   *
+   * VuePress 手机导航大约 56px，
+   * 给标题留下 84px 安全距离。
+   */
+
   .post-header-inner {
-    padding: 40px 20px 15px;
+    padding: 84px 20px 18px;
   }
+
+  /*
+   * 标题
+   */
 
   .post-header-inner h1 {
     font-size: 1.8rem;
+
+    line-height: 1.45;
+
+    margin-bottom: 16px;
   }
+
+  /*
+   * 返回顶部
+   */
 
   .back-top {
     right: 18px;
@@ -623,6 +733,10 @@ export default {
 
     line-height: 36px;
   }
+
+  /*
+   * 上一篇 / 下一篇
+   */
 
   .post-navigation {
     grid-template-columns: 1fr;
@@ -637,11 +751,20 @@ export default {
   .post-navigation-placeholder {
     display: none;
   }
+
+  /*
+   * 文章内容
+   */
+
+  .post-header {
+    overflow-x: hidden;
+  }
 }
 
-/* =========================
-   平板 / 小屏幕隐藏目录
-   ========================= */
+/*
+ * ============================================================
+ * 平板 / 小屏幕隐藏目录
+ * ============================================================ */
 
 @media (max-width: 1200px) {
   .post-toc {
