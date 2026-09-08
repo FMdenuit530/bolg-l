@@ -4,33 +4,27 @@
       <!-- =========================
            阅读进度条
            ========================= -->
+
       <div class="reading-progress">
-        <div
-          class="reading-progress-bar"
-          :style="{
-            width: readingProgress + '%',
-          }"
-        ></div>
+        <div class="reading-progress-bar" :style="{ width: readingProgress + '%' }"></div>
       </div>
 
       <!-- =========================
            返回顶部
            ========================= -->
-      <button v-show="showBackTop" class="back-top" type="button" aria-label="返回顶部" @click="backToTop">↑</button>
+
+      <button v-show="showBackTop" class="back-top" type="button" @click="backToTop" aria-label="返回顶部">↑</button>
 
       <!-- =========================
            文章头部
            ========================= -->
+
       <div class="post-header">
         <div class="post-header-inner">
-          <!-- 文章标题 -->
           <h1>
             {{ $page.title }}
           </h1>
 
-          <!-- =====================
-               日期 / 分类
-               ===================== -->
           <div class="post-meta">
             <span v-if="$page.frontmatter.date" class="post-date">
               {{ formatDate($page.frontmatter.date) }}
@@ -45,9 +39,6 @@
             </span>
           </div>
 
-          <!-- =====================
-               标签
-               ===================== -->
           <div v-if="$page.frontmatter.tags" class="post-tags">
             <router-link v-for="tag in $page.frontmatter.tags" :key="tag" :to="getTagPath(tag)" class="tag"> # {{ tag }} </router-link>
           </div>
@@ -57,12 +48,23 @@
       <!-- =========================
            文章目录
            ========================= -->
+
       <aside v-if="$page.headers && $page.headers.length" class="post-toc">
         <div class="toc-title">文章目录</div>
 
         <ul>
-          <li v-for="header in $page.headers" :key="header.slug" :class="'toc-level-' + header.level">
-            <a :href="'#' + header.slug">
+          <li
+            v-for="header in $page.headers"
+            :key="header.slug"
+            :class="[
+              'toc-item',
+              'toc-level-' + header.level,
+              {
+                active: activeToc === header.slug,
+              },
+            ]"
+          >
+            <a :href="'#' + header.slug" @click.prevent="scrollToHeading(header.slug)">
               {{ header.title }}
             </a>
           </li>
@@ -70,12 +72,12 @@
       </aside>
     </template>
 
-    <!-- =========================
-         上一篇 / 下一篇
-         ========================= -->
     <template slot="page-bottom">
+      <!-- =========================
+           上一篇 / 下一篇
+           ========================= -->
+
       <div class="post-navigation">
-        <!-- 上一篇 -->
         <router-link v-if="previousPost" :to="previousPost.path" class="post-navigation-card previous">
           <div class="navigation-label">← 上一篇</div>
 
@@ -86,7 +88,6 @@
 
         <div v-else class="post-navigation-placeholder"></div>
 
-        <!-- 下一篇 -->
         <router-link v-if="nextPost" :to="nextPost.path" class="post-navigation-card next">
           <div class="navigation-label">下一篇 →</div>
 
@@ -109,77 +110,65 @@ export default {
     ParentLayout,
   },
 
-  /*
-   * =========================
-   * 页面数据
-   * =========================
-   */
   data() {
     return {
-      /*
-       * 阅读进度
-       */
       readingProgress: 0,
 
-      /*
-       * 是否显示返回顶部
-       */
       showBackTop: false,
+
+      /*
+       * 当前正在阅读的标题
+       */
+      activeToc: '',
+
+      /*
+       * IntersectionObserver
+       */
+      tocObserver: null,
     }
   },
 
-  /*
-   * =========================
-   * 计算属性
-   * =========================
-   */
   computed: {
     /*
-     * =====================
-     * 所有文章
-     * =====================
+     * ========================================
+     * 所有博客文章
+     * ========================================
      */
+
     blogPosts() {
       return this.$site.pages
-
         .filter((page) => {
           return page.path.startsWith('/posts/') && page.frontmatter && page.frontmatter.date
         })
-
         .sort((a, b) => {
           const dateA = new Date(a.frontmatter.date).getTime()
 
           const dateB = new Date(b.frontmatter.date).getTime()
 
-          /*
-           * 日期相同，
-           * 使用路径保证稳定排序
-           */
           if (dateA === dateB) {
             return a.path.localeCompare(b.path)
           }
 
-          /*
-           * 最新文章在前
-           */
           return dateB - dateA
         })
     },
 
     /*
-     * =====================
-     * 当前文章索引
-     * =====================
+     * ========================================
+     * 当前文章位置
+     * ========================================
      */
+
     currentPostIndex() {
       return this.blogPosts.findIndex((post) => post.path === this.$page.path)
     },
 
     /*
-     * =====================
+     * ========================================
      * 上一篇
-     * =====================
+     * ========================================
      */
+
     previousPost() {
       if (this.currentPostIndex === -1 || this.currentPostIndex >= this.blogPosts.length - 1) {
         return null
@@ -189,10 +178,11 @@ export default {
     },
 
     /*
-     * =====================
+     * ========================================
      * 下一篇
-     * =====================
+     * ========================================
      */
+
     nextPost() {
       if (this.currentPostIndex <= 0) {
         return null
@@ -202,40 +192,55 @@ export default {
     },
   },
 
-  /*
-   * =========================
-   * 页面加载
-   * =========================
-   */
   mounted() {
-    window.addEventListener('scroll', this.handleScroll)
+    /*
+     * 滚动监听
+     */
+
+    window.addEventListener('scroll', this.handleScroll, {
+      passive: true,
+    })
+
+    /*
+     * 初始化
+     */
 
     this.handleScroll()
+
+    /*
+     * 初始化目录观察
+     */
+
+    this.$nextTick(() => {
+      this.initTocObserver()
+    })
   },
 
-  /*
-   * =========================
-   * 页面销毁
-   * =========================
-   */
   beforeDestroy() {
     window.removeEventListener('scroll', this.handleScroll)
+
+    /*
+     * 销毁目录观察器
+     */
+
+    if (this.tocObserver) {
+      this.tocObserver.disconnect()
+      this.tocObserver = null
+    }
   },
 
   methods: {
     /*
-     * =========================
-     * 阅读进度
-     * =========================
+     * ========================================
+     * 滚动监听
+     * ========================================
      */
+
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
 
       const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
 
-      /*
-       * 页面没有滚动空间
-       */
       if (documentHeight <= 0) {
         this.readingProgress = 0
 
@@ -244,22 +249,17 @@ export default {
         return
       }
 
-      /*
-       * 当前阅读百分比
-       */
       this.readingProgress = Math.min(100, Math.max(0, (scrollTop / documentHeight) * 100))
 
-      /*
-       * 返回顶部显示条件
-       */
       this.showBackTop = scrollTop > 300
     },
 
     /*
-     * =========================
+     * ========================================
      * 返回顶部
-     * =========================
+     * ========================================
      */
+
     backToTop() {
       window.scrollTo({
         top: 0,
@@ -268,10 +268,145 @@ export default {
     },
 
     /*
-     * =========================
-     * 日期格式化
-     * =========================
+     * ========================================
+     * 初始化 TOC Observer
+     * ========================================
      */
+
+    initTocObserver() {
+      if (typeof window === 'undefined') {
+        return
+      }
+
+      if (!this.$page.headers || !this.$page.headers.length) {
+        return
+      }
+
+      /*
+       * 不支持 IntersectionObserver
+       */
+
+      if (!('IntersectionObserver' in window)) {
+        return
+      }
+
+      /*
+       * 如果之前存在
+       * 先销毁
+       */
+
+      if (this.tocObserver) {
+        this.tocObserver.disconnect()
+
+        this.tocObserver = null
+      }
+
+      /*
+       * 创建观察器
+       */
+
+      this.tocObserver = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+
+          if (visible.length) {
+            this.activeToc = visible[0].target.id
+
+            return
+          }
+
+          /*
+           * 当前没有元素完全进入观察区时，
+           * 找距离顶部最近的标题
+           */
+
+          const candidates = entries
+            .map((entry) => ({
+              id: entry.target.id,
+
+              top: Math.abs(entry.boundingClientRect.top),
+            }))
+            .sort((a, b) => a.top - b.top)
+
+          if (candidates.length) {
+            this.activeToc = candidates[0].id
+          }
+        },
+        {
+          root: null,
+
+          /*
+           * 顶部预留导航栏空间
+           */
+
+          rootMargin: '-90px 0px -65% 0px',
+
+          threshold: [0, 0.1, 0.5, 1],
+        },
+      )
+
+      /*
+       * 开始观察所有标题
+       */
+
+      this.$page.headers.forEach((header) => {
+        const element = document.getElementById(header.slug)
+
+        if (element) {
+          this.tocObserver.observe(element)
+        }
+      })
+
+      /*
+       * 初始状态
+       */
+
+      if (this.$page.headers.length) {
+        this.activeToc = this.$page.headers[0].slug
+      }
+    },
+
+    /*
+     * ========================================
+     * 点击目录平滑滚动
+     * ========================================
+     */
+
+    scrollToHeading(slug) {
+      const element = document.getElementById(slug)
+
+      if (!element) {
+        return
+      }
+
+      const navbarHeight = 80
+
+      const rect = element.getBoundingClientRect()
+
+      const top = window.pageYOffset + rect.top - navbarHeight
+
+      window.scrollTo({
+        top: Math.max(0, top),
+        behavior: 'smooth',
+      })
+
+      this.activeToc = slug
+
+      /*
+       * 修改 URL hash
+       */
+
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#' + slug)
+      }
+    },
+
+    /*
+     * ========================================
+     * 日期格式
+     * ========================================
+     */
+
     formatDate(date) {
       if (!date) {
         return ''
@@ -293,19 +428,21 @@ export default {
     },
 
     /*
-     * =========================
+     * ========================================
      * 分类地址
-     * =========================
+     * ========================================
      */
+
     getCategoryPath(category) {
       return `/category/${encodeURIComponent(category)}/`
     },
 
     /*
-     * =========================
+     * ========================================
      * 标签地址
-     * =========================
+     * ========================================
      */
+
     getTagPath(tag) {
       return `/tags/${encodeURIComponent(tag)}/`
     },
@@ -314,53 +451,24 @@ export default {
 </script>
 
 <style scoped>
-/* ============================================================
- * 文章头部
- * ============================================================ */
+/* =========================
+   文章头部
+   ========================= */
 
 .post-header {
   width: 100%;
 }
 
-/*
- * ============================================================
- * 文章头部内部
- *
- * ★ 这里是这次修复的核心
- *
- * VuePress 顶部 navbar 是固定定位，
- * 所以文章标题必须主动避开它。
- * ============================================================ */
-
 .post-header-inner {
   max-width: 820px;
-
   margin: 0 auto;
-
-  /*
-   * 原来：
-   *
-   * padding: 60px 40px 20px;
-   *
-   * 现在：
-   *
-   * 顶部增加到 92px
-   */
   padding: 92px 40px 20px;
-
   box-sizing: border-box;
-
   text-align: left;
 }
 
-/*
- * ============================================================
- * 文章标题
- * ============================================================ */
-
 .post-header-inner h1 {
   margin-top: 0;
-
   margin-bottom: 18px;
 
   color: #2c3e50;
@@ -370,24 +478,16 @@ export default {
   line-height: 1.4;
 
   text-align: left;
-
-  /*
-   * 防止超长标题撑破。
-   */
-  overflow-wrap: anywhere;
 }
 
-/*
- * ============================================================
- * 日期 / 分类
- * ============================================================ */
+/* =========================
+   文章元信息
+   ========================= */
 
 .post-meta {
   display: flex;
 
   align-items: center;
-
-  flex-wrap: wrap;
 
   color: #999;
 
@@ -416,10 +516,9 @@ export default {
   color: #ccc;
 }
 
-/*
- * ============================================================
- * 标签
- * ============================================================ */
+/* =========================
+   标签
+   ========================= */
 
 .post-tags {
   display: flex;
@@ -453,14 +552,11 @@ export default {
   background: #e8f5ef;
 
   color: #3eaf7c;
-
-  text-decoration: none;
 }
 
-/*
- * ============================================================
- * 文章目录
- * ============================================================ */
+/* =========================
+   文章目录
+   ========================= */
 
 .post-toc {
   position: fixed;
@@ -477,7 +573,7 @@ export default {
 
   border-left: 1px solid #eaecef;
 
-  background: #fff;
+  background: rgba(255, 255, 255, 0.94);
 
   box-sizing: border-box;
 
@@ -502,12 +598,16 @@ export default {
   list-style: none;
 }
 
-.post-toc li {
-  margin: 8px 0;
+.toc-item {
+  margin: 4px 0;
 }
 
 .post-toc a {
   display: block;
+
+  padding: 4px 8px;
+
+  border-left: 2px solid transparent;
 
   color: #999;
 
@@ -517,25 +617,38 @@ export default {
 
   text-decoration: none;
 
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .post-toc a:hover {
   color: #3eaf7c;
 }
 
-.post-toc .toc-level-3 {
+.toc-item.active > a {
+  border-left-color: #3eaf7c;
+
+  background: #f8faf9;
+
+  color: #3eaf7c;
+
+  font-weight: 500;
+}
+
+.toc-level-3 {
   padding-left: 12px;
 }
 
-.post-toc .toc-level-4 {
+.toc-level-4 {
   padding-left: 24px;
 }
 
-/*
- * ============================================================
- * 阅读进度条
- * ============================================================ */
+.toc-level-5 {
+  padding-left: 36px;
+}
+
+/* =========================
+   阅读进度条
+   ========================= */
 
 .reading-progress {
   position: fixed;
@@ -561,10 +674,9 @@ export default {
   transition: width 0.1s ease;
 }
 
-/*
- * ============================================================
- * 返回顶部
- * ============================================================ */
+/* =========================
+   返回顶部
+   ========================= */
 
 .back-top {
   position: fixed;
@@ -610,10 +722,9 @@ export default {
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.12);
 }
 
-/*
- * ============================================================
- * 上一篇 / 下一篇
- * ============================================================ */
+/* =========================
+   上一篇 / 下一篇
+   ========================= */
 
 .post-navigation {
   max-width: 820px;
@@ -687,35 +798,153 @@ export default {
   min-height: 95px;
 }
 
-/*
- * ============================================================
- * 手机端
- * ============================================================ */
+/* =========================
+   移动端
+   ========================= */
 
-@media (max-width: 719px) {
+/* =========================
+   平板
+   769px - 1200px
+   ========================= */
+
+@media (max-width: 1200px) and (min-width: 769px) {
   /*
-   * ======================================
-   * ★ 手机端核心修复
-   * ======================================
-   *
-   * VuePress 手机导航大约 56px，
-   * 给标题留下 84px 安全距离。
+   * 右侧目录
    */
 
-  .post-header-inner {
-    padding: 84px 20px 18px;
+  .post-toc {
+    position: fixed;
+
+    top: 110px;
+
+    right: 16px;
+
+    width: 190px;
+
+    max-height: calc(100vh - 140px);
+
+    padding: 14px;
+
+    background: rgba(255, 255, 255, 0.96);
+
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   }
 
   /*
-   * 标题
+   * 文章头部
+   *
+   * 给右侧目录留出空间
    */
+
+  .post-header-inner {
+    max-width: none;
+
+    width: calc(100% - 250px);
+
+    margin-left: 30px;
+
+    margin-right: 220px;
+
+    padding: 92px 20px 20px;
+
+    box-sizing: border-box;
+  }
+
+  /*
+   * 正文区域
+   *
+   * VuePress 默认正文容器
+   */
+
+  .theme-default-content {
+    max-width: none;
+
+    width: calc(100% - 250px);
+
+    margin-left: 30px;
+
+    margin-right: 220px;
+
+    box-sizing: border-box;
+  }
+
+  /*
+   * 上一篇 / 下一篇
+   */
+
+  .post-navigation {
+    max-width: none;
+
+    width: calc(100% - 250px);
+
+    margin-left: 30px;
+
+    margin-right: 220px;
+
+    padding: 0 20px;
+
+    box-sizing: border-box;
+  }
+
+  /*
+   * 目录文字稍微紧凑一些
+   */
+
+  .post-toc a {
+    font-size: 12px;
+
+    line-height: 1.55;
+  }
+
+  .toc-title {
+    font-size: 13px;
+  }
+}
+
+/* =========================
+   手机
+   768px 以下
+   ========================= */
+
+@media (max-width: 768px) {
+  /*
+   * 手机隐藏目录
+   */
+
+  .post-toc {
+    display: none;
+  }
+
+  /*
+   * 文章头部恢复全宽
+   */
+
+  .post-header-inner {
+    width: 100%;
+
+    max-width: 820px;
+
+    margin: 0 auto;
+
+    padding: 84px 20px 18px;
+
+    box-sizing: border-box;
+  }
 
   .post-header-inner h1 {
     font-size: 1.8rem;
+  }
 
-    line-height: 1.45;
+  /*
+   * 正文恢复默认宽度
+   */
 
-    margin-bottom: 16px;
+  .theme-default-content {
+    width: auto;
+
+    margin-left: auto;
+
+    margin-right: auto;
   }
 
   /*
@@ -739,35 +968,18 @@ export default {
    */
 
   .post-navigation {
+    width: auto;
+
+    margin: 35px 0 20px;
+
+    padding: 0 20px;
+
     grid-template-columns: 1fr;
 
     gap: 12px;
-
-    margin-top: 35px;
-
-    padding: 0 20px;
   }
 
   .post-navigation-placeholder {
-    display: none;
-  }
-
-  /*
-   * 文章内容
-   */
-
-  .post-header {
-    overflow-x: hidden;
-  }
-}
-
-/*
- * ============================================================
- * 平板 / 小屏幕隐藏目录
- * ============================================================ */
-
-@media (max-width: 1200px) {
-  .post-toc {
     display: none;
   }
 }

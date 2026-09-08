@@ -1,69 +1,88 @@
 <template>
   <ParentLayout>
     <template slot="page-top">
-      <div class="blog-index">
-        <div class="blog-hero">
-          <div class="hero-content">
-            <div class="hero-badge">👋 Welcome to my blog</div>
+      <!-- =========================
+           首页 Hero
+           ========================= -->
 
-            <h1>记录学习 · 分享技术 · 持续成长</h1>
+      <section class="home-hero">
+        <div class="home-hero-inner">
+          <div class="home-kicker">MY BLOG</div>
 
-            <p>这里记录我的编程学习、开发实践与技术思考。</p>
+          <h1>我的博客</h1>
 
-            <div class="hero-links">
-              <router-link to="/category/"> 浏览分类 </router-link>
+          <p class="home-description">记录学习 · 分享技术 · 持续成长</p>
+        </div>
+      </section>
+    </template>
 
-              <router-link to="/tags/"> 查看标签 </router-link>
-            </div>
+    <!-- =========================
+         文章列表
+         ========================= -->
+
+    <template slot="default">
+      <main class="home-content">
+        <div class="home-content-inner">
+          <div class="home-section-title">
+            <span> 最新文章 </span>
+
+            <span class="home-section-line"></span>
           </div>
-        </div>
 
-        <div class="section-title">
-          <h2>最新文章</h2>
-          <p>记录学习、开发与技术实践</p>
-        </div>
+          <div class="post-list">
+            <article v-for="post in $pagination.pages" :key="post.path" class="post-card">
+              <!-- =========================
+                   日期
+                   ========================= -->
 
-        <div v-for="post in $pagination.pages" :key="post.path" class="post-card">
-          <h2>
-            <router-link :to="post.path">
-              {{ post.title }}
-            </router-link>
-          </h2>
+              <div class="post-card-date">
+                {{ formatDate(post.frontmatter.date) }}
+              </div>
 
-          <div class="post-meta">
-            <span v-if="post.frontmatter.date">
-              {{ formatDate(post.frontmatter.date) }}
-            </span>
+              <!-- =========================
+                   标题
+                   ========================= -->
 
-            <span v-if="post.frontmatter.category" class="category">
-              <router-link :to="getCategoryPath(post.frontmatter.category)">
-                {{ post.frontmatter.category }}
+              <h2 class="post-card-title">
+                <router-link :to="post.path">
+                  {{ post.title }}
+                </router-link>
+              </h2>
+
+              <!-- =========================
+                   分类 / 标签
+                   ========================= -->
+
+              <div class="post-card-meta">
+                <router-link v-if="post.frontmatter.category" :to="getCategoryPath(post.frontmatter.category)" class="post-card-category">
+                  {{ post.frontmatter.category }}
+                </router-link>
+
+                <span v-if="post.frontmatter.category && post.frontmatter.tags && post.frontmatter.tags.length" class="post-card-dot"> · </span>
+
+                <router-link v-for="tag in post.frontmatter.tags || []" :key="tag" :to="getTagPath(tag)" class="post-card-tag"> #{{ tag }} </router-link>
+              </div>
+
+              <!-- =========================
+                   摘要
+                   ========================= -->
+
+              <p v-if="post.frontmatter.description" class="post-card-description">
+                {{ post.frontmatter.description }}
+              </p>
+
+              <!-- =========================
+                   阅读
+                   ========================= -->
+
+              <router-link :to="post.path" class="post-card-read">
+                阅读全文
+                <span>→</span>
               </router-link>
-            </span>
+            </article>
           </div>
-
-          <p v-if="post.frontmatter.description" class="post-description">
-            {{ post.frontmatter.description }}
-          </p>
-
-          <div v-if="post.frontmatter.tags" class="post-tags">
-            <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="getTagPath(tag)" class="tag"> # {{ tag }} </router-link>
-          </div>
-
-          <router-link :to="post.path" class="read-more">
-            阅读全文
-            <span>→</span>
-          </router-link>
         </div>
-
-        <div class="pagination">
-          <router-link v-if="$pagination.hasPrev" :to="$pagination.prevLink"> ← 上一页 </router-link>
-
-          <span v-else></span>
-
-          <router-link v-if="$pagination.hasNext" :to="$pagination.nextLink"> 下一页 → </router-link>
-        </div>
-      </div>
+      </main>
     </template>
   </ParentLayout>
 </template>
@@ -72,11 +91,19 @@
 import ParentLayout from '@parent-theme/layouts/Layout.vue'
 
 export default {
+  name: 'IndexPost',
+
   components: {
     ParentLayout,
   },
 
   methods: {
+    /*
+     * ========================================
+     * 日期格式
+     * ========================================
+     */
+
     formatDate(date) {
       if (!date) {
         return ''
@@ -89,15 +116,29 @@ export default {
       }
 
       const year = d.getFullYear()
+
       const month = String(d.getMonth() + 1).padStart(2, '0')
+
       const day = String(d.getDate()).padStart(2, '0')
 
-      return `${year}-${month}-${day}`
+      return `${year}.${month}.${day}`
     },
+
+    /*
+     * ========================================
+     * 分类地址
+     * ========================================
+     */
 
     getCategoryPath(category) {
       return `/category/${encodeURIComponent(category)}/`
     },
+
+    /*
+     * ========================================
+     * 标签地址
+     * ========================================
+     */
 
     getTagPath(tag) {
       return `/tags/${encodeURIComponent(tag)}/`
@@ -107,413 +148,319 @@ export default {
 </script>
 
 <style scoped>
-.blog-index {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 60px 0 50px;
-}
-
 /* =========================
    首页 Hero
    ========================= */
 
-.blog-hero {
-  margin-bottom: 45px;
+.home-hero {
+  width: 100%;
 
-  padding: 55px 45px;
+  box-sizing: border-box;
 
-  border-radius: 14px;
-
-  background: linear-gradient(135deg, #f8faf9 0%, #f3f8f5 100%);
-
-  border: 1px solid #edf2ef;
+  padding: 100px 20px 65px;
 }
 
-.hero-content {
-  max-width: 700px;
+.home-hero-inner {
+  max-width: 900px;
+
+  margin: 0 auto;
+
+  box-sizing: border-box;
+
+  padding: 0 30px;
 }
 
-.hero-badge {
-  display: inline-block;
+.home-kicker {
+  margin-bottom: 16px;
 
-  margin-bottom: 18px;
-
-  padding: 5px 10px;
-
-  border-radius: 20px;
-
-  background: #e8f5ef;
-
-  color: #3eaf7c;
+  color: #aaa;
 
   font-size: 12px;
 
-  font-weight: 500;
+  font-weight: 600;
+
+  letter-spacing: 0.18em;
 }
 
-.hero-content h1 {
-  margin: 0 0 15px;
+.home-hero h1 {
+  margin: 0;
 
   color: #2c3e50;
 
-  font-size: 32px;
+  font-size: 3rem;
 
-  line-height: 1.4;
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  letter-spacing: -0.02em;
 }
 
-.hero-content p {
-  margin: 0;
+.home-description {
+  margin: 18px 0 0;
 
-  color: #777;
+  color: #888;
 
-  font-size: 15px;
+  font-size: 16px;
 
   line-height: 1.8;
 }
 
-.hero-links {
-  display: flex;
+/* =========================
+   首页内容
+   ========================= */
 
-  gap: 12px;
-
-  margin-top: 25px;
+.home-content {
+  width: 100%;
 }
 
-.hero-links a {
-  display: inline-block;
+.home-content-inner {
+  max-width: 900px;
 
-  padding: 8px 16px;
+  margin: 0 auto;
 
-  border-radius: 6px;
+  padding: 0 30px 70px;
 
-  background: #3eaf7c;
-
-  color: #fff;
-
-  font-size: 13px;
-
-  text-decoration: none;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-}
-
-.hero-links a:hover {
-  background: #359568;
-
-  color: #fff;
-
-  text-decoration: none;
-
-  transform: translateY(-2px);
-
-  box-shadow: 0 5px 15px rgba(62, 175, 124, 0.2);
+  box-sizing: border-box;
 }
 
 /* =========================
-   最新文章标题
+   区块标题
    ========================= */
 
-.section-title {
-  margin-bottom: 25px;
-}
+.home-section-title {
+  display: flex;
 
-.section-title h2 {
-  margin: 0 0 6px;
+  align-items: center;
+
+  gap: 16px;
+
+  margin-bottom: 25px;
 
   color: #2c3e50;
 
-  font-size: 24px;
+  font-size: 15px;
+
+  font-weight: 600;
 }
 
-.section-title p {
-  margin: 0;
+.home-section-line {
+  flex: 1;
 
-  color: #999;
+  height: 1px;
 
-  font-size: 14px;
+  background: #eeeeee;
 }
 
-/* 文章卡片 */
+/* =========================
+   文章列表
+   ========================= */
+
+.post-list {
+  display: flex;
+
+  flex-direction: column;
+}
+
+/* =========================
+   文章卡片
+   ========================= */
 
 .post-card {
   position: relative;
 
-  padding: 28px 30px;
-  margin-bottom: 20px;
+  padding: 28px 0 32px;
 
-  border: 1px solid #eaecef;
-  border-radius: 10px;
-
-  background: #fff;
-
-  overflow: hidden;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border-bottom: 1px solid #eeeeee;
 }
 
-.post-card::before {
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-  left: 0;
-
-  width: 3px;
-  height: 0;
-
-  background: #3eaf7c;
-
-  transition: height 0.25s ease;
+.post-card:first-child {
+  padding-top: 10px;
 }
 
-.post-card:hover {
-  transform: translateY(-3px);
+/* =========================
+   日期
+   ========================= */
 
-  border-color: #dfe2e5;
+.post-card-date {
+  margin-bottom: 9px;
 
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+  color: #aaa;
+
+  font-size: 12px;
+
+  letter-spacing: 0.04em;
 }
 
-.post-card:hover::before {
-  height: 100%;
-}
+/* =========================
+   标题
+   ========================= */
 
-.post-card:hover {
-  transform: translateY(-3px);
+.post-card-title {
+  margin: 0;
 
-  border-color: #dfe2e5;
+  font-size: 22px;
 
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
+  font-weight: 600;
 
-/* 标题 */
-
-.post-card h2 {
-  margin-top: 0;
-  margin-bottom: 12px;
-
-  font-size: 21px;
   line-height: 1.5;
 }
 
-.post-card h2 a {
-  display: inline;
-
+.post-card-title a {
   color: #2c3e50;
 
   text-decoration: none;
 
-  background-image: linear-gradient(to right, #3eaf7c, #3eaf7c);
-
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0 2px;
-
-  transition: color 0.2s ease, background-size 0.25s ease;
+  transition: color 0.2s ease;
 }
 
-.post-card h2 a:hover {
-  color: #3eaf7c;
-
-  background-size: 100% 2px;
-}
-
-.post-card h2 a {
-  color: #2c3e50;
-  text-decoration: none;
-}
-
-.post-card h2 a:hover {
+.post-card-title a:hover {
   color: #3eaf7c;
 }
 
-/* 日期 + 分类 */
+/* =========================
+   分类 / 标签
+   ========================= */
 
-.post-meta {
+.post-card-meta {
   display: flex;
-  align-items: center;
+
   flex-wrap: wrap;
-  gap: 10px;
 
-  margin-bottom: 16px;
+  align-items: center;
 
-  color: #999;
-  font-size: 13px;
+  gap: 8px;
+
+  margin-top: 9px;
+
+  color: #aaa;
+
+  font-size: 12px;
 }
 
-.post-meta .category {
-  position: relative;
-
-  padding: 3px 9px;
-
-  border-radius: 4px;
-
-  background: #f0f8f4;
-
+.post-card-category {
   color: #3eaf7c;
-}
 
-.post-meta .category::before {
-  display: none;
-}
-
-.post-meta .category a {
-  color: #3eaf7c;
   text-decoration: none;
 }
 
-.post-meta .category a:hover {
+.post-card-category:hover {
   color: #2c3e50;
 }
 
-.post-meta .category {
-  position: relative;
-  padding-left: 15px;
+.post-card-dot {
+  color: #d5d5d5;
 }
 
-.post-meta .category::before {
-  content: '·';
+.post-card-tag {
+  color: #999;
 
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-
-.post-meta .category a {
-  color: #3eaf7c;
   text-decoration: none;
 }
 
-/* 摘要 */
+.post-card-tag:hover {
+  color: #3eaf7c;
+}
 
-.post-description {
-  margin: 0 0 17px;
+/* =========================
+   摘要
+   ========================= */
 
-  color: #666;
+.post-card-description {
+  max-width: 700px;
+
+  margin: 14px 0 0;
+
+  color: #777;
 
   font-size: 14px;
 
   line-height: 1.8;
 }
 
-/* 标签 */
+/* =========================
+   阅读全文
+   ========================= */
 
-.post-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-
-  margin-bottom: 20px;
-}
-
-.tag {
-  display: inline-block;
-
-  padding: 4px 9px;
-
-  border: 1px solid #eee;
-
-  border-radius: 4px;
-
-  background: #fafafa;
-
-  color: #777;
-
-  font-size: 12px;
-
-  text-decoration: none;
-
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-}
-
-.tag:hover {
-  background: #f0f8f4;
-
-  border-color: #d7eee3;
-
-  color: #3eaf7c;
-}
-
-.tag:hover {
-  background: #e8f5ef;
-  color: #3eaf7c;
-}
-
-/* 阅读全文 */
-
-.read-more {
+.post-card-read {
   display: inline-flex;
+
   align-items: center;
-  gap: 5px;
 
-  color: #3eaf7c;
+  gap: 7px;
 
-  font-size: 14px;
+  margin-top: 15px;
+
+  color: #999;
+
+  font-size: 13px;
 
   text-decoration: none;
+
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.read-more span {
+.post-card-read span {
   transition: transform 0.2s ease;
 }
 
-.read-more:hover span {
-  transform: translateX(4px);
-}
-
-/* 分页 */
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-
-  margin-top: 40px;
-  padding-top: 25px;
-
-  border-top: 1px solid #eaecef;
-}
-
-.pagination a {
+.post-card-read:hover {
   color: #3eaf7c;
+
   text-decoration: none;
+
+  transform: translateX(2px);
 }
 
-.pagination a:hover {
-  color: #2c3e50;
+.post-card-read:hover span {
+  transform: translateX(3px);
 }
 
-/* 手机端 */
+/* =========================
+   手机端
+   ========================= */
 
 @media (max-width: 719px) {
-  .blog-index {
-    padding: 40px 20px;
+  .home-hero {
+    padding: 82px 18px 48px;
   }
 
-  .blog-hero {
-    padding: 35px 25px;
-
-    margin-bottom: 35px;
+  .home-hero-inner {
+    padding: 0 2px;
   }
 
-  .hero-content h1 {
-    font-size: 25px;
+  .home-hero h1 {
+    font-size: 2.25rem;
   }
 
-  .hero-content p {
+  .home-description {
     font-size: 14px;
   }
 
-  .hero-links {
-    flex-wrap: wrap;
+  .home-content-inner {
+    padding: 0 18px 50px;
+  }
+
+  .home-section-title {
+    margin-bottom: 16px;
   }
 
   .post-card {
-    padding: 22px 20px;
+    padding: 24px 0 28px;
   }
 
-  .post-card h2 {
-    font-size: 20px;
+  .post-card:first-child {
+    padding-top: 8px;
+  }
+
+  .post-card-title {
+    font-size: 19px;
+  }
+
+  .post-card-description {
+    font-size: 13px;
+
+    line-height: 1.75;
   }
 }
 </style>

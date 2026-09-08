@@ -1,11 +1,12 @@
 ---
 title: JavaScript Promise
 date: 2026-08-30
-description: 学习 JavaScript Promise 的基本概念和异步编程中的常见用法。
 category: JavaScript
+
 tags:
-  - JavaScript
   - Promise
+
+description: 学习 JavaScript Promise 的基本概念、状态变化、then、catch、finally，以及异步编程中的常见用法。
 ---
 
 # JavaScript Promise

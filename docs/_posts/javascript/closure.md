@@ -1,11 +1,13 @@
 ---
-title: JavaScript 闭包
+title: JavaScript Closure
 date: 2026-08-30
-description: 了解 JavaScript 闭包的基本概念、作用域以及实际使用方式。
 category: JavaScript
+
 tags:
   - JavaScript
   - 闭包
+
+description: 深入理解 JavaScript 闭包的概念、作用域、变量保存机制以及闭包在实际开发中的常见应用。
 ---
 
 # JavaScript 闭包

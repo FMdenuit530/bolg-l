@@ -1,10 +1,12 @@
 ---
 title: Git 基础
 date: 2026-08-30
-description: Git 常用命令和基本工作流程。
 category: Git
+
 tags:
   - Git
+
+description: 从 Git 基础概念开始，介绍常用 Git 命令、提交、分支以及日常开发中的基本使用方法。
 ---
 
 # Git 基础

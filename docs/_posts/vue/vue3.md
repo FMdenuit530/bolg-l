@@ -1,11 +1,13 @@
 ---
-title: Vue 3 入门
+title: Vue 3
 date: 2026-08-30
-description: Vue 3 基础知识学习记录。
 category: Vue
+
 tags:
   - Vue
   - Vue 3
+
+description: 介绍 Vue 3 的基本概念、Composition API、响应式系统以及现代 Vue 项目的常见开发方式。
 ---
 
 # Vue 3 入门
