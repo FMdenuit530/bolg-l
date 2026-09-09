@@ -27,6 +27,10 @@
             <span class="home-section-line"></span>
           </div>
 
+          <!-- =========================
+               文章列表
+               ========================= -->
+
           <div class="post-list">
             <article v-for="post in $pagination.pages" :key="post.path" class="post-card">
               <!-- 日期 -->
@@ -61,7 +65,7 @@
                 {{ post.frontmatter.description }}
               </p>
 
-              <!-- 阅读 -->
+              <!-- 阅读全文 -->
 
               <router-link :to="post.path" class="post-card-read">
                 阅读全文
@@ -70,6 +74,40 @@
               </router-link>
             </article>
           </div>
+
+          <!-- =========================
+               首页分页
+               ========================= -->
+
+          <nav v-if="$pagination && ($pagination.hasPrev || $pagination.hasNext)" class="home-pagination" aria-label="文章分页">
+            <!-- 上一页 -->
+
+            <router-link v-if="$pagination.hasPrev" :to="$pagination.prevLink" class="home-pagination-link pagination-prev">
+              <span class="pagination-arrow"> ← </span>
+
+              <span> 上一页 </span>
+            </router-link>
+
+            <!-- 页码 -->
+
+            <div class="home-pagination-pages">
+              <!-- 当前首页 -->
+
+              <router-link to="/" class="home-pagination-page active"> 1 </router-link>
+
+              <!-- 第二页 -->
+
+              <router-link v-if="$pagination.hasNext" :to="$pagination.nextLink" class="home-pagination-page"> 2 </router-link>
+            </div>
+
+            <!-- 下一页 -->
+
+            <router-link v-if="$pagination.hasNext" :to="$pagination.nextLink" class="home-pagination-link pagination-next">
+              <span> 下一页 </span>
+
+              <span class="pagination-arrow"> → </span>
+            </router-link>
+          </nav>
         </div>
       </main>
     </template>
@@ -138,7 +176,7 @@ export default {
 
 <style scoped>
 /* =========================
-   Hero
+   首页 Hero
    ========================= */
 
 .home-hero {
@@ -218,7 +256,7 @@ export default {
 }
 
 /* =========================
-   最新文章标题
+   最新文章
    ========================= */
 
 .home-section-title {
@@ -255,10 +293,6 @@ export default {
   flex-direction: column;
 }
 
-/* =========================
-   文章
-   ========================= */
-
 .post-card {
   position: relative;
 
@@ -267,6 +301,10 @@ export default {
   border-bottom: 1px solid #eeeeee;
 
   transition: padding-left 0.2s ease, border-color 0.2s ease;
+}
+
+.post-card:first-child {
+  padding-top: 10px;
 }
 
 .post-card::before {
@@ -295,10 +333,6 @@ export default {
 
 .post-card:hover::before {
   height: 100%;
-}
-
-.post-card:first-child {
-  padding-top: 10px;
 }
 
 /* =========================
@@ -336,41 +370,17 @@ export default {
 
   text-decoration: none;
 
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.post-card-title a::after {
-  content: '→';
-
-  display: inline-block;
-
-  margin-left: 8px;
-
-  color: #aaa;
-
-  opacity: 0;
-
-  transform: translateX(-5px);
-
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .post-card-title a:hover {
   color: #3eaf7c;
-}
 
-.post-card-title a:hover::after {
-  opacity: 1;
-
-  transform: translateX(0);
-}
-
-.post-card-title a:hover {
-  color: #3eaf7c;
+  text-decoration: none;
 }
 
 /* =========================
-   分类标签
+   分类 / 标签
    ========================= */
 
 .post-card-meta {
@@ -451,10 +461,6 @@ export default {
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
-.post-card-read span {
-  transition: transform 0.2s ease;
-}
-
 .post-card-read:hover {
   color: #3eaf7c;
 
@@ -463,12 +469,116 @@ export default {
   transform: translateX(2px);
 }
 
-.post-card-read:hover span {
-  transform: translateX(3px);
+/* =========================
+   首页分页
+   ========================= */
+
+.home-pagination {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 20px;
+
+  margin: 45px 0 10px;
+
+  padding-top: 30px;
+
+  border-top: 1px solid #eeeeee;
 }
 
-.post-card-read:hover span {
-  transform: translateX(3px);
+/* =========================
+   上一页 / 下一页
+   ========================= */
+
+.home-pagination-link {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  color: #999;
+
+  font-size: 13px;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.home-pagination-link:hover {
+  color: #3eaf7c;
+
+  text-decoration: none;
+}
+
+.pagination-prev:hover {
+  transform: translateX(-2px);
+}
+
+.pagination-next:hover {
+  transform: translateX(2px);
+}
+
+.pagination-arrow {
+  font-size: 16px;
+
+  line-height: 1;
+}
+
+/* =========================
+   页码
+   ========================= */
+
+.home-pagination-pages {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+}
+
+.home-pagination-page {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 34px;
+
+  height: 34px;
+
+  border-radius: 50%;
+
+  color: #999;
+
+  font-size: 13px;
+
+  text-decoration: none;
+
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.home-pagination-page:hover {
+  background: #f5f7f6;
+
+  color: #3eaf7c;
+
+  text-decoration: none;
+
+  transform: translateY(-1px);
+}
+
+.home-pagination-page.active {
+  background: #3eaf7c;
+
+  color: #fff;
+
+  font-weight: 600;
 }
 
 /* =========================
@@ -508,6 +618,14 @@ export default {
     padding-top: 8px;
   }
 
+  .post-card:hover {
+    padding-left: 0;
+  }
+
+  .post-card::before {
+    display: none;
+  }
+
   .post-card-title {
     font-size: 19px;
   }
@@ -517,16 +635,33 @@ export default {
 
     line-height: 1.75;
   }
-  .post-card:hover {
-    padding-left: 0;
+
+  /*
+   * 手机分页
+   */
+
+  .home-pagination {
+    gap: 10px;
+
+    margin-top: 35px;
+
+    padding-top: 25px;
   }
 
-  .post-card::before {
-    display: none;
+  .home-pagination-link {
+    font-size: 12px;
   }
 
-  .post-card-title a::after {
-    display: none;
+  .home-pagination-page {
+    width: 30px;
+
+    height: 30px;
+
+    font-size: 12px;
+  }
+
+  .home-pagination-pages {
+    gap: 2px;
   }
 }
 </style>
