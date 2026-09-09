@@ -541,3 +541,249 @@ body
 
   .branch-background
     opacity: 0.72
+    /* ============================================================
+   全站导航栏优化
+   ============================================================ */
+
+/* ==============================
+   导航栏整体
+   ============================== */
+
+.navbar
+  position sticky
+  top 0
+  z-index 100
+
+  height 60px
+
+  background rgba(255, 255, 255, 0.94)
+
+  backdrop-filter blur(10px)
+  -webkit-backdrop-filter blur(10px)
+
+  border-bottom 1px solid rgba(0, 0, 0, 0.06)
+
+  box-shadow 0 2px 12px rgba(0, 0, 0, 0.025)
+
+
+/* ==============================
+   博客名称
+   ============================== */
+
+.navbar .site-name
+  color #2c3e50
+
+  font-size 17px
+
+  font-weight 600
+
+  letter-spacing 0.02em
+
+  transition color .2s ease
+
+
+.navbar .site-name:hover
+  color #3eaf7c
+
+
+/* ==============================
+   导航链接区域
+   ============================== */
+
+.navbar .links
+  height 60px
+
+  background transparent
+
+
+.navbar .nav-links
+  align-items center
+
+
+.navbar .nav-links a
+  position relative
+
+  padding 0 3px
+
+  margin 0 10px
+
+  color #666
+
+  font-size 14px
+
+  text-decoration none
+
+  transition color .2s ease
+
+
+/* ==============================
+   导航悬停
+   ============================== */
+
+.navbar .nav-links a:hover
+  color #3eaf7c
+
+  text-decoration none
+
+
+/* ==============================
+   当前导航
+   ============================== */
+
+.navbar .nav-links a.router-link-exact-active
+  color #3eaf7c
+
+  font-weight 500
+
+
+.navbar .nav-links a.router-link-exact-active::after
+  content ''
+
+  position absolute
+
+  left 50%
+
+  bottom -7px
+
+  width 18px
+
+  height 2px
+
+  border-radius 2px
+
+  background #3eaf7c
+
+  transform translateX(-50%)
+
+
+/* ==============================
+   GitHub 外链
+   ============================== */
+
+.navbar .nav-links a[href*="github.com"]
+  color #555
+
+
+.navbar .nav-links a[href*="github.com"]:hover
+  color #3eaf7c
+
+
+/* ==============================
+   搜索框
+   ============================== */
+
+.navbar .search-box
+  margin-right 12px
+
+
+.navbar .search-box input
+  width 180px
+
+  height 34px
+
+  padding 0 14px
+
+  border 1px solid #e5e7eb
+
+  border-radius 18px
+
+  background rgba(255, 255, 255, 0.8)
+
+  color #555
+
+  font-size 13px
+
+  transition:
+    width .25s ease,
+    border-color .2s ease,
+    box-shadow .2s ease
+
+
+.navbar .search-box input::placeholder
+  color #aaa
+
+
+.navbar .search-box input:focus
+  width 220px
+
+  border-color #cfe9dc
+
+  outline none
+
+  box-shadow 0 0 0 3px rgba(62, 175, 124, 0.08)
+
+
+/* ==============================
+   搜索图标
+   ============================== */
+
+.navbar .search-box .suggestions
+  border-radius 10px
+
+  border 1px solid #eeeeee
+
+  box-shadow 0 10px 30px rgba(0, 0, 0, 0.08)
+
+
+/* ==============================
+   导航栏移动时的视觉
+   ============================== */
+
+@media (min-width: 720px)
+
+  .navbar
+    padding 0 18px
+
+
+/* ==============================
+   平板
+   ============================== */
+
+@media (max-width: 960px) and (min-width: 720px)
+
+  .navbar .nav-links a
+    margin 0 6px
+
+    font-size 13px
+
+  .navbar .search-box input
+    width 145px
+
+  .navbar .search-box input:focus
+    width 180px
+
+
+/* ==============================
+   手机
+   ============================== */
+
+@media (max-width: 719px)
+
+  .navbar
+    height 60px
+
+  .navbar .site-name
+    font-size 16px
+
+  /*
+   * VuePress 手机端菜单按钮
+   */
+
+  .navbar .links
+    height 60px
+
+  /*
+   * 不修改 VuePress 原本的
+   * mobile-dropdown 行为
+   */
+
+  .navbar .search-box
+    margin-right 5px
+
+
+/* ==============================
+   全局锚点滚动偏移
+   ============================== */
+
+html
+  scroll-padding-top 75px
