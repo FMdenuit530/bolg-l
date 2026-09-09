@@ -406,43 +406,33 @@ export default {
 .post-card {
   position: relative;
 
-  padding: 28px 0 32px;
+  margin-bottom: 18px;
 
-  border-bottom: 1px solid #eeeeee;
+  padding: 25px 28px 28px;
 
-  transition: padding-left 0.2s ease, border-color 0.2s ease;
+  border: 1px solid #eeeeee;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.86);
+
+  box-sizing: border-box;
+
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #e1ebe5;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.045);
 }
 
 .post-card:first-child {
   padding-top: 10px;
-}
-
-.post-card::before {
-  content: '';
-
-  position: absolute;
-
-  left: -12px;
-
-  top: 0;
-
-  width: 2px;
-
-  height: 0;
-
-  background: #3eaf7c;
-
-  transition: height 0.2s ease;
-}
-
-.post-card:hover {
-  padding-left: 10px;
-
-  border-color: #e2e2e2;
-}
-
-.post-card:hover::before {
-  height: 100%;
 }
 
 /* =========================
@@ -450,11 +440,13 @@ export default {
    ========================= */
 
 .post-card-date {
-  margin-bottom: 9px;
+  margin-bottom: 8px;
 
   color: #aaa;
 
   font-size: 12px;
+
+  line-height: 1.5;
 
   letter-spacing: 0.04em;
 }
@@ -466,7 +458,7 @@ export default {
 .post-card-title {
   margin: 0;
 
-  font-size: 22px;
+  font-size: 21px;
 
   font-weight: 600;
 
@@ -502,11 +494,13 @@ export default {
 
   gap: 8px;
 
-  margin-top: 9px;
+  margin-top: 10px;
 
   color: #aaa;
 
   font-size: 12px;
+
+  line-height: 1.6;
 }
 
 .post-card-category {
@@ -538,7 +532,7 @@ export default {
    ========================= */
 
 .post-card-description {
-  max-width: 700px;
+  max-width: 720px;
 
   margin: 14px 0 0;
 
@@ -546,7 +540,7 @@ export default {
 
   font-size: 14px;
 
-  line-height: 1.8;
+  line-height: 1.85;
 }
 
 /* =========================
@@ -560,7 +554,7 @@ export default {
 
   gap: 7px;
 
-  margin-top: 15px;
+  margin-top: 17px;
 
   color: #999;
 
@@ -571,12 +565,20 @@ export default {
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
+.post-card-read span {
+  transition: transform 0.2s ease;
+}
+
 .post-card-read:hover {
   color: #3eaf7c;
 
   text-decoration: none;
 
   transform: translateX(2px);
+}
+
+.post-card-read:hover span {
+  transform: translateX(3px);
 }
 
 /* =========================
@@ -721,19 +723,17 @@ export default {
   }
 
   .post-card {
-    padding: 24px 0 28px;
-  }
+    margin-bottom: 12px;
 
-  .post-card:first-child {
-    padding-top: 8px;
+    padding: 21px 18px 24px;
+
+    border-radius: 8px;
   }
 
   .post-card:hover {
-    padding-left: 0;
-  }
+    transform: none;
 
-  .post-card::before {
-    display: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.035);
   }
 
   .post-card-title {
@@ -743,7 +743,11 @@ export default {
   .post-card-description {
     font-size: 13px;
 
-    line-height: 1.75;
+    line-height: 1.8;
+  }
+
+  .post-card-read {
+    margin-top: 15px;
   }
 
   /*
