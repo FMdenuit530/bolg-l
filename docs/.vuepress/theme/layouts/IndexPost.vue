@@ -87,6 +87,12 @@ export default {
   },
 
   methods: {
+    /*
+     * ========================================
+     * 日期格式
+     * ========================================
+     */
+
     formatDate(date) {
       if (!date) {
         return ''
@@ -107,9 +113,21 @@ export default {
       return `${year}.${month}.${day}`
     },
 
+    /*
+     * ========================================
+     * 分类地址
+     * ========================================
+     */
+
     getCategoryPath(category) {
       return `/category/${encodeURIComponent(category)}/`
     },
+
+    /*
+     * ========================================
+     * 标签地址
+     * ========================================
+     */
 
     getTagPath(tag) {
       return `/tags/${encodeURIComponent(tag)}/`
@@ -247,6 +265,36 @@ export default {
   padding: 28px 0 32px;
 
   border-bottom: 1px solid #eeeeee;
+
+  transition: padding-left 0.2s ease, border-color 0.2s ease;
+}
+
+.post-card::before {
+  content: '';
+
+  position: absolute;
+
+  left: -12px;
+
+  top: 0;
+
+  width: 2px;
+
+  height: 0;
+
+  background: #3eaf7c;
+
+  transition: height 0.2s ease;
+}
+
+.post-card:hover {
+  padding-left: 10px;
+
+  border-color: #e2e2e2;
+}
+
+.post-card:hover::before {
+  height: 100%;
 }
 
 .post-card:first-child {
@@ -282,11 +330,39 @@ export default {
 }
 
 .post-card-title a {
+  display: inline-block;
+
   color: #2c3e50;
 
   text-decoration: none;
 
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.post-card-title a::after {
+  content: '→';
+
+  display: inline-block;
+
+  margin-left: 8px;
+
+  color: #aaa;
+
+  opacity: 0;
+
+  transform: translateX(-5px);
+
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-card-title a:hover {
+  color: #3eaf7c;
+}
+
+.post-card-title a:hover::after {
+  opacity: 1;
+
+  transform: translateX(0);
 }
 
 .post-card-title a:hover {
@@ -391,6 +467,10 @@ export default {
   transform: translateX(3px);
 }
 
+.post-card-read:hover span {
+  transform: translateX(3px);
+}
+
 /* =========================
    手机
    ========================= */
@@ -436,6 +516,17 @@ export default {
     font-size: 13px;
 
     line-height: 1.75;
+  }
+  .post-card:hover {
+    padding-left: 0;
+  }
+
+  .post-card::before {
+    display: none;
+  }
+
+  .post-card-title a::after {
+    display: none;
   }
 }
 </style>
