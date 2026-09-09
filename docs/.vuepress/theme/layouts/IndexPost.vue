@@ -14,13 +14,11 @@
           <p class="home-description">记录学习 · 分享技术 · 持续成长</p>
         </div>
       </section>
-    </template>
 
-    <!-- =========================
-         文章列表
-         ========================= -->
+      <!-- =========================
+           最新文章
+           ========================= -->
 
-    <template slot="default">
       <main class="home-content">
         <div class="home-content-inner">
           <div class="home-section-title">
@@ -31,17 +29,13 @@
 
           <div class="post-list">
             <article v-for="post in $pagination.pages" :key="post.path" class="post-card">
-              <!-- =========================
-                   日期
-                   ========================= -->
+              <!-- 日期 -->
 
               <div class="post-card-date">
                 {{ formatDate(post.frontmatter.date) }}
               </div>
 
-              <!-- =========================
-                   标题
-                   ========================= -->
+              <!-- 标题 -->
 
               <h2 class="post-card-title">
                 <router-link :to="post.path">
@@ -49,9 +43,7 @@
                 </router-link>
               </h2>
 
-              <!-- =========================
-                   分类 / 标签
-                   ========================= -->
+              <!-- 分类 / 标签 -->
 
               <div class="post-card-meta">
                 <router-link v-if="post.frontmatter.category" :to="getCategoryPath(post.frontmatter.category)" class="post-card-category">
@@ -63,21 +55,18 @@
                 <router-link v-for="tag in post.frontmatter.tags || []" :key="tag" :to="getTagPath(tag)" class="post-card-tag"> #{{ tag }} </router-link>
               </div>
 
-              <!-- =========================
-                   摘要
-                   ========================= -->
+              <!-- 摘要 -->
 
               <p v-if="post.frontmatter.description" class="post-card-description">
                 {{ post.frontmatter.description }}
               </p>
 
-              <!-- =========================
-                   阅读
-                   ========================= -->
+              <!-- 阅读 -->
 
               <router-link :to="post.path" class="post-card-read">
                 阅读全文
-                <span>→</span>
+
+                <span> → </span>
               </router-link>
             </article>
           </div>
@@ -98,12 +87,6 @@ export default {
   },
 
   methods: {
-    /*
-     * ========================================
-     * 日期格式
-     * ========================================
-     */
-
     formatDate(date) {
       if (!date) {
         return ''
@@ -124,21 +107,9 @@ export default {
       return `${year}.${month}.${day}`
     },
 
-    /*
-     * ========================================
-     * 分类地址
-     * ========================================
-     */
-
     getCategoryPath(category) {
       return `/category/${encodeURIComponent(category)}/`
     },
-
-    /*
-     * ========================================
-     * 标签地址
-     * ========================================
-     */
 
     getTagPath(tag) {
       return `/tags/${encodeURIComponent(tag)}/`
@@ -149,7 +120,7 @@ export default {
 
 <style scoped>
 /* =========================
-   首页 Hero
+   Hero
    ========================= */
 
 .home-hero {
@@ -157,7 +128,7 @@ export default {
 
   box-sizing: border-box;
 
-  padding: 100px 20px 65px;
+  padding: 100px 20px 55px;
 }
 
 .home-hero-inner {
@@ -165,9 +136,9 @@ export default {
 
   margin: 0 auto;
 
-  box-sizing: border-box;
-
   padding: 0 30px;
+
+  box-sizing: border-box;
 }
 
 .home-kicker {
@@ -207,11 +178,15 @@ export default {
 }
 
 /* =========================
-   首页内容
+   内容
    ========================= */
 
 .home-content {
   width: 100%;
+
+  margin: 0;
+
+  padding: 0;
 }
 
 .home-content-inner {
@@ -225,7 +200,7 @@ export default {
 }
 
 /* =========================
-   区块标题
+   最新文章标题
    ========================= */
 
 .home-section-title {
@@ -263,7 +238,7 @@ export default {
 }
 
 /* =========================
-   文章卡片
+   文章
    ========================= */
 
 .post-card {
@@ -319,7 +294,7 @@ export default {
 }
 
 /* =========================
-   分类 / 标签
+   分类标签
    ========================= */
 
 .post-card-meta {
@@ -417,12 +392,12 @@ export default {
 }
 
 /* =========================
-   手机端
+   手机
    ========================= */
 
 @media (max-width: 719px) {
   .home-hero {
-    padding: 82px 18px 48px;
+    padding: 82px 18px 45px;
   }
 
   .home-hero-inner {
