@@ -1811,18 +1811,21 @@ export default {
   position: fixed;
 
   left: 0;
+
   top: 0;
 
   width: 100vw;
+
   height: 100vh;
+
+  display: block;
 
   pointer-events: none;
 
-  /*
-   * Canvas 在页面内容下面
-   */
   z-index: 0;
 
-  display: block;
+  background: transparent;
+
+  opacity: 0.9;
 }
 </style>

@@ -12,6 +12,18 @@
           <h1>我的博客</h1>
 
           <p class="home-description">记录学习 · 分享技术 · 持续成长</p>
+
+          <p class="home-subdescription">这里记录我的编程学习、开发实践与技术思考。</p>
+
+          <!-- =========================
+         Hero 操作
+         ========================= -->
+
+          <div class="home-actions">
+            <router-link to="/category/" class="home-action primary"> 浏览分类 </router-link>
+
+            <router-link to="/tags/" class="home-action secondary"> 查看标签 </router-link>
+          </div>
         </div>
       </section>
 
@@ -179,15 +191,23 @@ export default {
    首页 Hero
    ========================= */
 
+/* =========================
+   首页 Hero
+   ========================= */
+
 .home-hero {
+  position: relative;
+
   width: 100%;
 
   box-sizing: border-box;
 
-  padding: 100px 20px 55px;
+  padding: 100px 20px 70px;
 }
 
 .home-hero-inner {
+  position: relative;
+
   max-width: 900px;
 
   margin: 0 auto;
@@ -226,11 +246,101 @@ export default {
 .home-description {
   margin: 18px 0 0;
 
-  color: #888;
+  color: #666;
 
-  font-size: 16px;
+  font-size: 17px;
 
   line-height: 1.8;
+}
+
+.home-subdescription {
+  max-width: 650px;
+
+  margin: 8px 0 0;
+
+  color: #999;
+
+  font-size: 14px;
+
+  line-height: 1.9;
+}
+
+/* =========================
+   Hero 按钮
+   ========================= */
+
+.home-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin-top: 28px;
+}
+
+.home-action {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 92px;
+
+  height: 38px;
+
+  padding: 0 18px;
+
+  box-sizing: border-box;
+
+  border-radius: 6px;
+
+  font-size: 13px;
+
+  text-decoration: none;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.home-action.primary {
+  border: 1px solid #3eaf7c;
+
+  background: #3eaf7c;
+
+  color: #fff;
+}
+
+.home-action.primary:hover {
+  background: #359e70;
+
+  color: #fff;
+
+  text-decoration: none;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 16px rgba(62, 175, 124, 0.18);
+}
+
+.home-action.secondary {
+  border: 1px solid #dfe8e3;
+
+  background: rgba(255, 255, 255, 0.82);
+
+  color: #666;
+}
+
+.home-action.secondary:hover {
+  border-color: #cfe5da;
+
+  background: #f8fbf9;
+
+  color: #3eaf7c;
+
+  text-decoration: none;
+
+  transform: translateY(-2px);
 }
 
 /* =========================
@@ -662,6 +772,27 @@ export default {
 
   .home-pagination-pages {
     gap: 2px;
+  }
+  .home-actions {
+    gap: 10px;
+
+    margin-top: 24px;
+  }
+
+  .home-action {
+    min-width: 88px;
+
+    height: 36px;
+
+    padding: 0 15px;
+
+    font-size: 12px;
+  }
+
+  .home-subdescription {
+    font-size: 13px;
+
+    line-height: 1.8;
   }
 }
 </style>

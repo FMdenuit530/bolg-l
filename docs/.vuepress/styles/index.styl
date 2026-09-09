@@ -787,3 +787,43 @@ body
 
 html
   scroll-padding-top 75px
+  /* ============================================================
+   全站内容层保护
+   ============================================================ */
+
+.site-content
+  position relative
+  z-index 1
+
+
+/* ==============================
+   导航栏始终在背景之上
+   ============================== */
+
+.site-content .navbar
+  position relative
+  z-index 10
+
+
+/* ==============================
+   文章正文始终在背景之上
+   ============================== */
+
+.site-content .theme-default-content
+  position relative
+  z-index 2
+
+
+/* ==============================
+   自定义页面始终在背景之上
+   ============================== */
+
+.site-content .home-hero,
+.site-content .home-content,
+.site-content .category-page,
+.site-content .tags-page,
+.site-content .tag-hero,
+.site-content .tag-posts,
+.site-content .about-page
+  position relative
+  z-index 2
