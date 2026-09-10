@@ -31,33 +31,19 @@ module.exports = {
     repo: 'FMdenuit530/bolg-l',
 
     repoLabel: 'GitHub',
+    search: false,
 
     /*
      * 顶部导航
      */
 
     nav: [
-      {
-        text: '首页',
-        link: '/',
-      },
-
-      {
-        text: '分类',
-        link: '/category/',
-      },
-
-      {
-        text: '标签',
-        link: '/tags/',
-      },
-
-      {
-        text: '关于我',
-        link: '/about/',
-      },
+      { text: '首页', link: '/' },
+      { text: '分类', link: '/category/' },
+      { text: '标签', link: '/tags/' },
+      { text: '搜索', link: '/search/' },
+      { text: '关于我', link: '/about/' },
     ],
-
     /*
      * 更新信息
      */
