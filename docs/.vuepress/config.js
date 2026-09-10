@@ -41,6 +41,7 @@ module.exports = {
       { text: '首页', link: '/' },
       { text: '分类', link: '/category/' },
       { text: '标签', link: '/tags/' },
+      { text: '归档', link: '/archive/' },
       { text: '搜索', link: '/search/' },
       { text: '关于我', link: '/about/' },
     ],
