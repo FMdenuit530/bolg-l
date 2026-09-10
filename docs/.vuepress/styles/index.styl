@@ -1,553 +1,59 @@
-/* ==============================
-   全站基础样式
-   ============================== */
+/* ============================================================
+ * 全站基础
+ * ============================================================ */
 
 html
   scroll-behavior smooth
+  scroll-padding-top 75px
 
 body
+  margin 0
   color #2c3e50
   background #ffffff
 
+button,
+input,
+textarea
+  font-family inherit
 
-/* ==============================
-   顶部导航栏
-   ============================== */
-
-.navbar
-  box-shadow 0 1px 8px rgba(0, 0, 0, 0.04)
-  border-bottom 1px solid #f0f0f0
-
-.navbar .site-name
-  font-weight 600
-
-.navbar .links
-  background transparent
-
-
-/* ==============================
-   导航链接
-   ============================== */
-
-.nav-links a
-  transition color .2s ease
-
-.nav-links a:hover
-  color #3eaf7c
-
-
-/* ==============================
-   正文
-   ============================== */
-
-.theme-default-content
-  font-size 16px
-  line-height 1.85
-
-.theme-default-content p
-  margin 1.1em 0
-
-
-/* ==============================
-   标题
-   ============================== */
-
-.theme-default-content h2
-  margin-top 2.2em
-  padding-bottom .45rem
-  border-bottom 1px solid #eaecef
-
-.theme-default-content h3
-  margin-top 1.8em
-
-
-/* ==============================
-   链接
-   ============================== */
-
-.theme-default-content a
+a
   text-decoration none
 
-.theme-default-content a:hover
-  text-decoration underline
 
-
-/* ==============================
-   行内代码
-   ============================== */
-
-.theme-default-content code
-  padding .2rem .4rem
-  border-radius 4px
-
-
-/* 防止代码块内部 code 被上面的行内代码影响 */
-
-.theme-default-content pre code
-  padding 0
-  border-radius 0
-
-
-/* ==============================
-   引用
-   ============================== */
-
-.theme-default-content blockquote
-  margin 1.5rem 0
-  padding .8rem 1.2rem
-
-  border-left 4px solid #3eaf7c
-
-  background #f8f9fa
-
-  color #666
-
-
-/* ==============================
-   图片
-   ============================== */
-
-.theme-default-content img
-  border-radius 6px
-
-
-/* ==============================
-   页面切换动画
-   ============================== */
-
-.page
-  animation pageFadeIn .25s ease
-
-@keyframes pageFadeIn
-  from
-    opacity 0
-    transform translateY(4px)
-
-  to
-    opacity 1
-    transform translateY(0)
-
-
-/* ==============================
-   手机端
-   ============================== */
-
-@media (max-width: 719px)
-   .theme-default-content
-    padding: 72px 18px 32px
-    font-size 15px
-    line-height 1.8
-    /* ============================================================
- * 移动端适配
+/* ============================================================
+ * 全站内容层
  * ============================================================ */
 
-@media (max-width: 719px)
-
-  /* ----------------------------------------------------------
-   * 1. 全局页面
-   * ---------------------------------------------------------- */
-
-  html,
-  body
-    overflow-x: hidden
-
-
-  body
-    font-size: 15px
-
-
-  /* ----------------------------------------------------------
-   * 2. 顶部导航
-   * ---------------------------------------------------------- */
-
-  .navbar
-    padding: 0 16px
-
-    height: 56px
-
-
-  .navbar .site-name
-    font-size: 16px
-
-    max-width: 130px
-
-    overflow: hidden
-
-    text-overflow: ellipsis
-
-    white-space: nowrap
-
-
-  /* ----------------------------------------------------------
-   * 3. Logo
-   * ---------------------------------------------------------- */
-
-  .navbar .logo
-    width: 28px
-
-    height: 28px
-
-    margin-right: 8px
-
-    object-fit: cover
-
-
-  /* ----------------------------------------------------------
-   * 4. 搜索框
-   * ---------------------------------------------------------- */
-
-  .navbar .search-box
-    margin-right: 8px
-
-    transform: scale(0.92)
-
-    transform-origin: right center
-
-
-  .navbar .search-box input
-    width: 110px
-
-
-  /* ----------------------------------------------------------
-   * 5. 导航菜单
-   * ---------------------------------------------------------- */
-
-  .navbar .links
-    padding-left: 0
-
-
-  .navbar .nav-item
-    font-size: 14px
-
-
-  /* ----------------------------------------------------------
-   * 6. 首页主体
-   * ---------------------------------------------------------- */
-
-  .theme-container
-    overflow-x: hidden
-
-
-  .page
-    padding: 0 16px
-
-
-  /* ----------------------------------------------------------
-   * 7. 默认 VuePress 内容宽度
-   * ---------------------------------------------------------- */
-
-  .theme-default-content
-    padding: 32px 18px
-
-
-  .theme-default-content:not(.custom)
-    max-width: 100%
-
-
-  /* ----------------------------------------------------------
-   * 8. 首页 Hero
-   * ---------------------------------------------------------- */
-
-  .home
-    padding-left: 16px
-
-    padding-right: 16px
-
-
-  /* ----------------------------------------------------------
-   * 9. Hero 容器
-   * ---------------------------------------------------------- */
-
-  .home .hero
-    padding-top: 30px
-
-    padding-bottom: 30px
-
-
-  /* ----------------------------------------------------------
-   * 10. Hero 标题
-   * ---------------------------------------------------------- */
-
-  .home .hero h1
-    font-size: 30px
-
-    line-height: 1.35
-
-    margin-bottom: 18px
-
-    word-break: break-word
-
-
-  /* ----------------------------------------------------------
-   * 11. Hero 副标题
-   * ---------------------------------------------------------- */
-
-  .home .hero .description
-    font-size: 15px
-
-    line-height: 1.8
-
-    padding: 0 4px
-
-
-  /* ----------------------------------------------------------
-   * 12. Hero 按钮
-   * ---------------------------------------------------------- */
-
-  .home .hero .action-button
-    font-size: 14px
-
-    padding: 8px 16px
-
-    margin: 6px 4px
-
-
-  /* ----------------------------------------------------------
-   * 13. 最新文章区域
-   * ---------------------------------------------------------- */
-
-  .home .features
-    display: block
-
-
-  /* ----------------------------------------------------------
-   * 14. 首页文章卡片
-   * ---------------------------------------------------------- */
-
-  .home .custom-block
-    margin-left: 0
-
-    margin-right: 0
-
-
-  /* ----------------------------------------------------------
-   * 15. 文章卡片通用
-   * ---------------------------------------------------------- */
-
-  .post-list,
-  .post-card,
-  .article-card
-    width: 100%
-
-    box-sizing: border-box
-
-
-  /* ----------------------------------------------------------
-   * 16. 文章详情
-   * ---------------------------------------------------------- */
-
-  .page .content
-    padding-bottom: 40px
-
-
-  /* ----------------------------------------------------------
-   * 17. 文章标题
-   * ---------------------------------------------------------- */
-
-  .page h1
-    font-size: 28px
-
-    line-height: 1.4
-
-    word-break: break-word
-
-
-  .page h2
-    font-size: 22px
-
-    line-height: 1.45
-
-
-  .page h3
-    font-size: 19px
-
-    line-height: 1.5
-
-
-  /* ----------------------------------------------------------
-   * 18. 正文
-   * ---------------------------------------------------------- */
-
-  .page p,
-  .page li
-    font-size: 15px
-
-    line-height: 1.9
-
-
-  /* ----------------------------------------------------------
-   * 19. 代码块
-   * ---------------------------------------------------------- */
-
-  .theme-default-content pre,
-  .theme-default-content div[class*="language-"]
-    border-radius: 8px
-
-
-  .theme-default-content pre
-    font-size: 13px
-
-    line-height: 1.65
-
-    overflow-x: auto
-
-
-  /* ----------------------------------------------------------
-   * 20. 表格
-   * ---------------------------------------------------------- */
-
-  .theme-default-content table
-    display: block
-
-    overflow-x: auto
-
-    white-space: nowrap
-
-
-  /* ----------------------------------------------------------
-   * 21. 图片
-   * ---------------------------------------------------------- */
-
-  .theme-default-content img
-    max-width: 100%
-
-    height: auto
-
-
-  /* ----------------------------------------------------------
-   * 22. 引用
-   * ---------------------------------------------------------- */
-
-  .theme-default-content blockquote
-    margin-left: 0
-
-    margin-right: 0
-
-    padding-left: 14px
-
-
-  /* ----------------------------------------------------------
-   * 23. 分页
-   * ---------------------------------------------------------- */
-
-  .pagination
-    margin-left: 16px
-
-    margin-right: 16px
-
-
-  /* ----------------------------------------------------------
-   * 24. 上一篇 / 下一篇
-   * ---------------------------------------------------------- */
-
-  .page-nav
-    display: block
-
-
-  .page-nav .inner
-    display: block
-
-
-  .page-nav .next,
-  .page-nav .prev
-    width: 100%
-
-    box-sizing: border-box
-
-    margin-bottom: 12px
-
-
-  /* ----------------------------------------------------------
-   * 25. 目录
-   * ---------------------------------------------------------- */
-
-  .page-toc
-    display: none
-
-
-  /* ----------------------------------------------------------
-   * 26. 文章阅读区域
-   * ---------------------------------------------------------- */
-
-  .content__default
-    overflow-x: hidden
-
-
-  /* ----------------------------------------------------------
-   * 27. About 页面
-   * ---------------------------------------------------------- */
-
-  .about-footer-note
-    margin-top: 44px
-
-    padding-top: 20px
-
-    font-size: 12px
-
-
-  /* ----------------------------------------------------------
-   * 28. Footer
-   * ---------------------------------------------------------- */
-
-  .site-footer
-    margin-top: 56px
-
-    padding: 32px 18px 22px
-
-
-  .site-footer-inner
-    display: flex
-
-    flex-direction: column
-
-    align-items: flex-start
-
-    gap: 20px
-
-
-  .site-footer-right
-    flex-wrap: wrap
-
-    line-height: 1.8
-
-    white-space: normal
-
-
-  .site-footer-bottom
-    margin-top: 22px
-
-    text-align: left
-
-    line-height: 1.8
-
-
-  /* ----------------------------------------------------------
-   * 29. 隐藏过度装饰
-   * ---------------------------------------------------------- */
-
-  .sidebar
-    padding-top: 56px
-
-
-  /* ----------------------------------------------------------
-   * 30. 梅枝背景
-   * ----------------------------------------------------------
-   *
-   * 手机屏幕较窄。
-   *
-   * 背景不需要完全消失，
-   * 但可以稍微降低存在感。
-   */
-
-  .branch-background
-    opacity: 0.72
-    /* ============================================================
-   全站导航栏优化
-   ============================================================ */
-
-/* ==============================
-   导航栏整体
-   ============================== */
+#global-layout
+  position relative
+  min-height 100vh
+
+.site-content
+  position relative
+  z-index 1
+  min-height 100vh
+
+.site-content .navbar
+  z-index 10
+
+.site-content .theme-default-content
+  position relative
+  z-index 2
+
+.site-content .home-hero,
+.site-content .home-content,
+.site-content .category-page,
+.site-content .tags-page,
+.site-content .tag-hero,
+.site-content .tag-posts,
+.site-content .about-page
+  position relative
+  z-index 2
+
+
+/* ============================================================
+ * 顶部导航
+ * ============================================================ */
 
 .navbar
   position sticky
@@ -556,28 +62,23 @@ body
 
   height 60px
 
-  background rgba(255, 255, 255, 0.94)
+  background rgba(255, 255, 255, .94)
 
   backdrop-filter blur(10px)
   -webkit-backdrop-filter blur(10px)
 
-  border-bottom 1px solid rgba(0, 0, 0, 0.06)
+  border-bottom 1px solid rgba(0, 0, 0, .06)
 
-  box-shadow 0 2px 12px rgba(0, 0, 0, 0.025)
+  box-shadow 0 2px 12px rgba(0, 0, 0, .025)
 
-
-/* ==============================
-   博客名称
-   ============================== */
 
 .navbar .site-name
   color #2c3e50
 
   font-size 17px
-
   font-weight 600
 
-  letter-spacing 0.02em
+  letter-spacing .02em
 
   transition color .2s ease
 
@@ -586,13 +87,8 @@ body
   color #3eaf7c
 
 
-/* ==============================
-   导航链接区域
-   ============================== */
-
 .navbar .links
   height 60px
-
   background transparent
 
 
@@ -603,9 +99,8 @@ body
 .navbar .nav-links a
   position relative
 
-  padding 0 3px
-
   margin 0 10px
+  padding 0 3px
 
   color #666
 
@@ -616,23 +111,13 @@ body
   transition color .2s ease
 
 
-/* ==============================
-   导航悬停
-   ============================== */
-
 .navbar .nav-links a:hover
   color #3eaf7c
-
   text-decoration none
 
 
-/* ==============================
-   当前导航
-   ============================== */
-
 .navbar .nav-links a.router-link-exact-active
   color #3eaf7c
-
   font-weight 500
 
 
@@ -642,11 +127,9 @@ body
   position absolute
 
   left 50%
-
   bottom -7px
 
   width 18px
-
   height 2px
 
   border-radius 2px
@@ -656,9 +139,7 @@ body
   transform translateX(-50%)
 
 
-/* ==============================
-   GitHub 外链
-   ============================== */
+/* GitHub */
 
 .navbar .nav-links a[href*="github.com"]
   color #555
@@ -668,9 +149,9 @@ body
   color #3eaf7c
 
 
-/* ==============================
-   搜索框
-   ============================== */
+/* ============================================================
+ * 搜索框
+ * ============================================================ */
 
 .navbar .search-box
   margin-right 12px
@@ -678,25 +159,22 @@ body
 
 .navbar .search-box input
   width 180px
-
   height 34px
 
   padding 0 14px
 
-  border 1px solid #e5e7eb
+  box-sizing border-box
 
+  border 1px solid #e5e7eb
   border-radius 18px
 
-  background rgba(255, 255, 255, 0.8)
+  background rgba(255, 255, 255, .8)
 
   color #555
 
   font-size 13px
 
-  transition:
-    width .25s ease,
-    border-color .2s ease,
-    box-shadow .2s ease
+  transition width .25s ease, border-color .2s ease, box-shadow .2s ease
 
 
 .navbar .search-box input::placeholder
@@ -710,24 +188,19 @@ body
 
   outline none
 
-  box-shadow 0 0 0 3px rgba(62, 175, 124, 0.08)
+  box-shadow 0 0 0 3px rgba(62, 175, 124, .08)
 
-
-/* ==============================
-   搜索图标
-   ============================== */
 
 .navbar .search-box .suggestions
+  border 1px solid #eeeeee
   border-radius 10px
 
-  border 1px solid #eeeeee
-
-  box-shadow 0 10px 30px rgba(0, 0, 0, 0.08)
+  box-shadow 0 10px 30px rgba(0, 0, 0, .08)
 
 
-/* ==============================
-   导航栏移动时的视觉
-   ============================== */
+/* ============================================================
+ * 桌面导航
+ * ============================================================ */
 
 @media (min-width: 720px)
 
@@ -735,95 +208,1892 @@ body
     padding 0 18px
 
 
-/* ==============================
-   平板
-   ============================== */
+/* ============================================================
+ * 平板导航
+ * ============================================================ */
 
 @media (max-width: 960px) and (min-width: 720px)
 
   .navbar .nav-links a
     margin 0 6px
-
     font-size 13px
+
 
   .navbar .search-box input
     width 145px
+
 
   .navbar .search-box input:focus
     width 180px
 
 
-/* ==============================
-   手机
-   ============================== */
+/* ============================================================
+ * 全站正文
+ * ============================================================ */
+
+.theme-default-content
+  font-size 16px
+  line-height 1.85
+
+
+.theme-default-content p
+  margin 1.1em 0
+
+
+.theme-default-content a
+  color #3eaf7c
+
+  text-decoration none
+
+  transition color .2s ease
+
+
+.theme-default-content a:hover
+  color #2f9568
+  text-decoration underline
+
+
+.theme-default-content img
+  border-radius 6px
+
+
+/* ============================================================
+ * 页面淡入
+ * ============================================================ */
+
+.page
+  animation pageFadeIn .25s ease
+
+
+@keyframes pageFadeIn
+
+  from
+    opacity 0
+    transform translateY(4px)
+
+  to
+    opacity 1
+    transform translateY(0)
+
+
+/* ============================================================
+ * 文章正文
+ * ============================================================ */
+
+.page .theme-default-content
+  color #4b5563
+
+  font-size 16px
+  line-height 1.9
+
+
+.page .theme-default-content h1
+  margin-top 0
+  margin-bottom 1.4rem
+
+  color #2c3e50
+
+  font-size 2rem
+  font-weight 650
+  line-height 1.35
+
+
+.page .theme-default-content h2
+  position relative
+
+  margin-top 2.8rem
+  margin-bottom 1.2rem
+
+  padding 0 0 .55rem 14px
+
+  color #2c3e50
+
+  font-size 1.45rem
+  font-weight 600
+  line-height 1.45
+
+  border-bottom 1px solid #ececec
+
+
+.page .theme-default-content h2::before
+  content ''
+
+  position absolute
+
+  left 0
+  top .18em
+
+  width 4px
+  height 1.05em
+
+  border-radius 3px
+
+  background #3eaf7c
+
+
+.page .theme-default-content h3
+  margin-top 2rem
+  margin-bottom .9rem
+
+  color #374151
+
+  font-size 1.18rem
+  font-weight 600
+
+  line-height 1.5
+
+
+.page .theme-default-content h4
+  margin-top 1.6rem
+  margin-bottom .7rem
+
+  color #4b5563
+
+  font-size 1rem
+  font-weight 600
+
+
+.page .theme-default-content p
+  margin 1.15rem 0
+
+
+.page .theme-default-content a
+  color #3eaf7c
+  text-decoration none
+
+  transition color .2s ease
+
+
+.page .theme-default-content a:hover
+  color #2f9568
+  text-decoration underline
+
+
+/* ============================================================
+ * 行内代码
+ * ============================================================ */
+
+.theme-default-content code
+  padding .2rem .4rem
+  border-radius 4px
+
+
+.page .theme-default-content p code,
+.page .theme-default-content li code,
+.page .theme-default-content td code
+  margin 0 2px
+  padding 2px 5px
+
+  border 1px solid #eceff1
+  border-radius 4px
+
+  background #f5f6f7
+
+  color #687079
+
+  font-size .9em
+
+  font-family Consolas, Monaco, 'SFMono-Regular', 'Courier New', monospace
+
+
+.page .theme-default-content pre code
+  padding 0
+  border-radius 0
+
+
+/* ============================================================
+ * 引用
+ * ============================================================ */
+
+.theme-default-content blockquote
+  margin 1.5rem 0
+  padding .8rem 1.2rem
+
+  border-left 4px solid #3eaf7c
+
+  background #f8f9fa
+
+  color #666
+
+
+.page .theme-default-content blockquote
+  margin 1.6rem 0
+  padding .9rem 1.2rem
+
+  border-left 4px solid #3eaf7c
+  border-radius 0 6px 6px 0
+
+  background #f8faf9
+
+  color #6b7280
+
+
+.page .theme-default-content blockquote p
+  margin .35rem 0
+
+
+/* ============================================================
+ * 列表
+ * ============================================================ */
+
+.page .theme-default-content ul,
+.page .theme-default-content ol
+  margin 1rem 0
+  padding-left 1.7rem
+
+
+.page .theme-default-content li
+  margin .45rem 0
+
+
+.page .theme-default-content li::marker
+  color #8da99a
+
+
+/* ============================================================
+ * 分割线
+ * ============================================================ */
+
+.page .theme-default-content hr
+  margin 2.5rem 0
+
+  border 0
+  border-top 1px solid #eeeeee
+
+
+/* ============================================================
+ * 表格
+ * ============================================================ */
+
+.page .theme-default-content table
+  display table
+
+  width 100%
+
+  margin 1.6rem 0
+
+  border-collapse collapse
+
+  font-size 14px
+
+
+.page .theme-default-content th,
+.page .theme-default-content td
+  padding .75rem .9rem
+
+  border 1px solid #e5e7eb
+
+
+.page .theme-default-content th
+  background #f8faf9
+
+  color #374151
+
+  font-weight 600
+
+
+.page .theme-default-content tr:nth-child(even)
+  background #fcfcfc
+
+
+/* ============================================================
+ * 图片
+ * ============================================================ */
+
+.page .theme-default-content img
+  display block
+
+  max-width 100%
+  height auto
+
+  margin 1.6rem auto
+
+  border-radius 8px
+
+  box-shadow 0 4px 18px rgba(0, 0, 0, .04)
+
+
+/* ============================================================
+ * 强调文字
+ * ============================================================ */
+
+.page .theme-default-content strong
+  color #374151
+  font-weight 650
+
+
+/* ============================================================
+ * 隐藏标题 # 锚点
+ * ============================================================ */
+
+.page .theme-default-content .header-anchor
+  display none !important
+
+
+/* ============================================================
+ * 文章代码块
+ * ============================================================ */
+
+.page .theme-default-content div[class*="language-"]
+  position relative
+
+  margin 1.6rem 0
+
+  border 1px solid #e8ebed
+  border-radius 9px
+
+  background #f7f8f9
+
+  box-shadow 0 3px 14px rgba(0, 0, 0, .025)
+
+  overflow hidden
+
+
+.page .theme-default-content div[class*="language-"] pre
+  position relative
+
+  margin 0
+
+  padding 43px 22px 20px
+
+  box-sizing border-box
+
+  background #f7f8f9
+
+  overflow-x auto
+
+
+.page .theme-default-content div[class*="language-"] code
+  display block
+
+  padding 0
+
+  background transparent
+
+  color #374151
+
+  font-family Consolas, Monaco, 'SFMono-Regular', 'Courier New', monospace
+
+  font-size 13px
+
+  line-height 1.8
+
+  white-space pre
+
+
+/* ============================================================
+ * 代码块顶部语言栏
+ * ============================================================ */
+
+.page .theme-default-content div[class*="language-"]::before
+  content ''
+
+  position absolute
+
+  top 0
+  left 0
+  right 0
+
+  z-index 3
+
+  height 34px
+
+  padding 0 15px
+
+  box-sizing border-box
+
+  border-bottom 1px solid #e9ecef
+
+  background #fafafa
+
+  color #999
+
+  font-size 11px
+
+  font-weight 400
+
+  line-height 34px
+
+  letter-spacing .04em
+
+  text-transform uppercase
+
+  pointer-events none
+
+
+.page .theme-default-content div.language-js::before,
+.page .theme-default-content div.language-javascript::before
+  content 'javascript'
+
+
+.page .theme-default-content div.language-ts::before,
+.page .theme-default-content div.language-typescript::before
+  content 'typescript'
+
+
+.page .theme-default-content div.language-html::before
+  content 'html'
+
+
+.page .theme-default-content div.language-css::before
+  content 'css'
+
+
+.page .theme-default-content div.language-json::before
+  content 'json'
+
+
+.page .theme-default-content div.language-vue::before
+  content 'vue'
+
+
+.page .theme-default-content div.language-bash::before,
+.page .theme-default-content div.language-sh::before,
+.page .theme-default-content div.language-shell::before
+  content 'shell'
+
+
+.page .theme-default-content div.language-md::before,
+.page .theme-default-content div.language-markdown::before
+  content 'markdown'
+
+
+.page .theme-default-content div.language-python::before,
+.page .theme-default-content div.language-py::before
+  content 'python'
+
+
+/* ============================================================
+ * 复制按钮
+ * ============================================================ */
+
+.page .theme-default-content div[class*="language-"] button
+  position absolute !important
+
+  top 3px !important
+  right 10px !important
+
+  bottom auto !important
+  left auto !important
+
+  z-index 10 !important
+
+  display flex !important
+
+  align-items center !important
+  justify-content center !important
+
+  width 68px !important
+  min-width 68px !important
+
+  height 28px !important
+
+  margin 0 !important
+  padding 0 !important
+
+  box-sizing border-box
+
+  border 1px solid #dfe4e7
+
+  border-radius 6px
+
+  background rgba(255, 255, 255, .94)
+
+  color #888
+
+  font-size 13px
+  font-weight 400
+
+  line-height 1 !important
+
+  cursor pointer
+
+  opacity 1 !important
+
+  transform none !important
+
+  box-shadow none
+
+  transition background .2s ease, border-color .2s ease, color .2s ease, transform .2s ease
+
+
+.page .theme-default-content div[class*="language-"] button:hover
+  border-color #cfe5d9
+
+  background #f4faf7
+
+  color #3eaf7c
+
+  transform translateY(-1px) !important
+
+
+.page .theme-default-content div[class*="language-"] .code-copy-btn,
+.page .theme-default-content div[class*="language-"] .copy-code-btn,
+.page .theme-default-content div[class*="language-"] .copy-code-button,
+.page .theme-default-content div[class*="language-"] .code-copy-button
+  position absolute !important
+
+  top 3px !important
+  right 10px !important
+
+  bottom auto !important
+  left auto !important
+
+  z-index 11 !important
+
+  width 68px !important
+  min-width 68px !important
+
+  height 28px !important
+
+  margin 0 !important
+  padding 0 !important
+
+
+/* ============================================================
+ * 代码滚动条
+ * ============================================================ */
+
+.page .theme-default-content div[class*="language-"] pre::-webkit-scrollbar
+  width 7px
+  height 7px
+
+
+.page .theme-default-content div[class*="language-"] pre::-webkit-scrollbar-track
+  background transparent
+
+
+.page .theme-default-content div[class*="language-"] pre::-webkit-scrollbar-thumb
+  border-radius 10px
+
+  background #d9dddf
+
+
+.page .theme-default-content div[class*="language-"] pre::-webkit-scrollbar-thumb:hover
+  background #c5cbce
+
+
+/* ============================================================
+ * 代码高亮
+ * ============================================================ */
+
+.page .theme-default-content .token.comment,
+.page .theme-default-content .token.prolog,
+.page .theme-default-content .token.doctype,
+.page .theme-default-content .token.cdata
+  color #9aa0a6
+
+
+.page .theme-default-content .token.keyword,
+.page .theme-default-content .token.operator
+  color #59636e
+
+
+.page .theme-default-content .token.string,
+.page .theme-default-content .token.attr-value
+  color #718c7a
+
+
+.page .theme-default-content .token.function
+  color #53758f
+
+
+.page .theme-default-content .token.number,
+.page .theme-default-content .token.boolean
+  color #8a6d8f
+
+
+/* ============================================================
+ * 文章正文宽度
+ * ============================================================ */
+
+@media (min-width: 1201px)
+
+  .page .theme-default-content
+    width 880px
+    max-width 880px
+
+    margin-left auto
+    margin-right auto
+
+    padding-left 20px
+    padding-right 20px
+
+    box-sizing border-box
+
+
+  .page .theme-default-content div[class*="language-"]
+    max-width 100%
+
+    box-sizing border-box
+
+
+  .page .theme-default-content img
+    max-width 100%
+    height auto
+
+
+/* ============================================================
+ * 文章目录
+ * ============================================================ */
+
+@media (min-width: 1201px)
+
+  .post-toc
+    position fixed
+
+    top 120px
+    right 26px
+
+    width 210px
+
+    max-height calc(100vh - 160px)
+
+    padding 16px 14px
+
+    box-sizing border-box
+
+    border-left 1px solid #eeeeee
+
+    background rgba(255, 255, 255, .92)
+
+    overflow-y auto
+
+
+  .post-toc .toc-title
+    margin-bottom 13px
+
+    color #2c3e50
+
+    font-size 14px
+
+    font-weight 600
+
+
+  .post-toc .toc-item
+    margin 3px 0
+
+
+  .post-toc a
+    display block
+
+    padding 5px 7px
+
+    border-left 2px solid transparent
+
+    color #999
+
+    font-size 13px
+
+    line-height 1.55
+
+    text-decoration none
+
+
+  .post-toc a:hover
+    color #3eaf7c
+
+    text-decoration none
+
+
+  .post-toc .active > a
+    border-left-color #3eaf7c
+
+    background #f8faf9
+
+    color #3eaf7c
+
+    font-weight 500
+
+
+/* ============================================================
+ * 文章头部 / 底部导航
+ * ============================================================ */
+
+@media (min-width: 1201px)
+
+  .post-header-inner
+    max-width 880px
+
+    padding-left 20px
+    padding-right 20px
+
+    box-sizing border-box
+
+
+  .post-navigation
+    max-width 880px
+
+    padding-left 20px
+    padding-right 20px
+
+    box-sizing border-box
+
+
+/* ============================================================
+ * 超大屏幕
+ * ============================================================ */
+
+@media (min-width: 1500px)
+
+  .post-toc
+    right 34px
+
+    width 215px
+
+
+/* ============================================================
+ * 分类页
+ *
+ * 重点：
+ * 原来顶部 96px
+ * 现在改为 64px
+ * ============================================================ */
+
+.category-page
+  width 100%
+
+  max-width 880px
+
+  margin 0 auto
+
+  padding 5px 20px 70px
+
+  box-sizing border-box
+
+
+.category-page h1
+  margin 0
+
+  color #2c3e50
+
+  font-size 32px
+
+  font-weight 650
+
+  line-height 1.35
+
+
+.category-page h2,
+.category-page h3
+  color #374151
+
+
+.category-page > p
+  margin 12px 0 0
+
+  color #999
+
+  font-size 14px
+
+  line-height 1.8
+
+
+.category-page ul
+  margin 28px 0 0
+
+  padding 0
+
+  list-style none
+
+
+.category-page li
+  margin 0 0 10px
+
+
+.category-page li a
+  display flex
+
+  align-items center
+
+  justify-content space-between
+
+  min-height 62px
+
+  padding 0 20px
+
+  box-sizing border-box
+
+  border 1px solid #eeeeee
+
+  border-radius 9px
+
+  background rgba(255, 255, 255, .84)
+
+  color #4b5563
+
+  font-size 15px
+
+  text-decoration none
+
+  transition transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease, color .2s ease
+
+
+.category-page li a:hover
+  transform translateY(-2px)
+
+  border-color #dcebe3
+
+  background rgba(255, 255, 255, .96)
+
+  color #3eaf7c
+
+  box-shadow 0 7px 20px rgba(0, 0, 0, .035)
+
+  text-decoration none
+
+
+.category-page .category-list
+  margin-top 28px
+
+  display grid
+
+  grid-template-columns repeat(2, minmax(0, 1fr))
+
+  gap 12px
+
+
+.category-page .category-list a
+  display flex
+
+
+.category-page .category-item
+  margin 0
+
+
+.category-page .category-item a
+  min-height 68px
+
+
+/* ============================================================
+ * 标签总览页
+ * ============================================================ */
+
+.tags-page
+  width 100%
+
+  max-width 880px
+
+  margin 0 auto
+
+  padding 64px 20px 70px
+
+  box-sizing border-box
+
+
+.tags-page h1
+  margin 0
+
+  color #2c3e50
+
+  font-size 32px
+
+  font-weight 650
+
+  line-height 1.35
+
+
+.tags-page > p
+  margin 12px 0 0
+
+  color #999
+
+  font-size 14px
+
+  line-height 1.8
+
+
+.tags-page ul
+  display flex
+
+  flex-wrap wrap
+
+  gap 10px
+
+  margin 28px 0 0
+
+  padding 0
+
+  list-style none
+
+
+.tags-page li
+  margin 0
+
+
+.tags-page li a
+  display inline-flex
+
+  align-items center
+
+  justify-content center
+
+  min-height 34px
+
+  padding 0 13px
+
+  box-sizing border-box
+
+  border 1px solid #e7ece9
+
+  border-radius 17px
+
+  background rgba(248, 250, 249, .8)
+
+  color #777
+
+  font-size 13px
+
+  text-decoration none
+
+  transition transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease
+
+
+.tags-page li a:hover
+  transform translateY(-2px)
+
+  border-color #cfe5d9
+
+  background #f4faf7
+
+  color #3eaf7c
+
+  box-shadow 0 5px 15px rgba(62, 175, 124, .07)
+
+  text-decoration none
+
+
+.tags-page .tags-list,
+.tags-page .tag-list
+  display flex
+
+  flex-wrap wrap
+
+  gap 10px
+
+  margin-top 28px
+
+
+.tags-page .tag-item
+  margin 0
+
+
+/* ============================================================
+ * 标签详情页
+ * ============================================================ */
+
+.tag-hero
+  width 100%
+
+  max-width 880px
+
+  margin 0 auto
+
+  padding 70px 20px 30px
+
+  box-sizing border-box
+
+
+.tag-hero h1
+  margin 0
+
+  color #2c3e50
+
+  font-size 32px
+
+  font-weight 650
+
+  line-height 1.35
+
+
+.tag-hero p
+  margin 10px 0 0
+
+  color #999
+
+  font-size 13px
+
+  line-height 1.8
+
+
+.tag-posts
+  width 100%
+
+  max-width 880px
+
+  margin 0 auto
+
+  padding 10px 20px 70px
+
+  box-sizing border-box
+
+
+.tag-posts article,
+.tag-posts .post-card,
+.tag-posts .tag-post-card
+  position relative
+
+  margin-bottom 16px
+
+  padding 23px 26px
+
+  border 1px solid #eeeeee
+
+  border-radius 9px
+
+  box-sizing border-box
+
+  background rgba(255, 255, 255, .84)
+
+  transition transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease
+
+
+.tag-posts article:hover,
+.tag-posts .post-card:hover,
+.tag-posts .tag-post-card:hover
+  transform translateY(-2px)
+
+  border-color #dfece5
+
+  background rgba(255, 255, 255, .96)
+
+  box-shadow 0 8px 22px rgba(0, 0, 0, .04)
+
+
+.tag-posts h2
+  margin 0
+
+  color #2c3e50
+
+  font-size 20px
+
+  line-height 1.5
+
+
+.tag-posts h2 a
+  color #2c3e50
+
+  text-decoration none
+
+  transition color .2s ease
+
+
+.tag-posts h2 a:hover
+  color #3eaf7c
+
+  text-decoration none
+
+
+.tag-posts p
+  color #777
+
+  font-size 13px
+
+  line-height 1.85
+
+
+/* ============================================================
+ * 关于我
+ *
+ * 重点：
+ * 原来顶部 96px
+ * 现在改为 64px
+ * ============================================================ */
+
+.about-page
+  width 100%
+
+  max-width 880px
+
+  margin 0 auto
+
+  padding 5px 20px 70px
+
+  box-sizing border-box
+
+
+.about-page h1
+  margin 0
+
+  color #2c3e50
+
+  font-size 32px
+
+  font-weight 650
+
+  line-height 1.35
+
+
+.about-page h2
+  margin-top 38px
+
+  margin-bottom 14px
+
+  color #374151
+
+  font-size 21px
+
+  font-weight 600
+
+
+.about-page p
+  color #666
+
+  font-size 15px
+
+  line-height 1.9
+
+
+.about-page a
+  color #3eaf7c
+
+  text-decoration none
+
+
+.about-page a:hover
+  text-decoration underline
+
+
+/* ============================================================
+ * 首页兼容
+ * ============================================================ */
+
+.home-hero,
+.home-content
+  position relative
+
+  z-index 2
+
+
+/* ============================================================
+ * 平板
+ * ============================================================ */
+
+@media (max-width: 1200px) and (min-width: 769px)
+
+  .page .theme-default-content
+    padding-left 20px
+
+    padding-right 20px
+
+    box-sizing border-box
+
+
+  .post-header-inner
+    width calc(100% - 250px)
+
+    margin-left 30px
+
+    margin-right 220px
+
+
+  .post-navigation
+    width calc(100% - 250px)
+
+    margin-left 30px
+
+    margin-right 220px
+
+
+  .post-toc
+    top 110px
+
+    right 16px
+
+    width 190px
+
+    max-height calc(100vh - 140px)
+
+    padding 14px
+
+    background rgba(255, 255, 255, .96)
+
+    box-shadow 0 4px 18px rgba(0, 0, 0, .04)
+
+
+  .post-toc a
+    font-size 12px
+
+
+  .toc-title
+    font-size 13px
+
+
+  .category-page,
+  .tags-page,
+  .tag-hero,
+  .tag-posts,
+  .about-page
+    padding-left 30px
+
+    padding-right 30px
+
+
+/* ============================================================
+ * 手机
+ * ============================================================ */
 
 @media (max-width: 719px)
+
+  html,
+  body
+    overflow-x hidden
+
+
+  body
+    font-size 15px
+
+
+  /* ----------------------------------------------------------
+   * 导航
+   * ---------------------------------------------------------- */
 
   .navbar
     height 60px
 
+    padding 0 16px
+
+
   .navbar .site-name
+    max-width 130px
+
+    overflow hidden
+
+    text-overflow ellipsis
+
+    white-space nowrap
+
     font-size 16px
 
-  /*
-   * VuePress 手机端菜单按钮
-   */
+
+  .navbar .logo
+    width 28px
+
+    height 28px
+
+    margin-right 8px
+
+    object-fit cover
+
 
   .navbar .links
     height 60px
 
-  /*
-   * 不修改 VuePress 原本的
-   * mobile-dropdown 行为
-   */
+    padding-left 0
+
+
+  .navbar .nav-item
+    font-size 14px
+
 
   .navbar .search-box
     margin-right 5px
 
+    transform scale(.92)
 
-/* ==============================
-   全局锚点滚动偏移
-   ============================== */
-
-html
-  scroll-padding-top 75px
-  /* ============================================================
-   全站内容层保护
-   ============================================================ */
-
-.site-content
-  position relative
-  z-index 1
+    transform-origin right center
 
 
-/* ==============================
-   导航栏始终在背景之上
-   ============================== */
-
-.site-content .navbar
-  position relative
-  z-index 10
+  .navbar .search-box input
+    width 110px
 
 
-/* ==============================
-   文章正文始终在背景之上
-   ============================== */
+  /* ----------------------------------------------------------
+   * 页面
+   * ---------------------------------------------------------- */
 
-.site-content .theme-default-content
-  position relative
-  z-index 2
+  .theme-container
+    overflow-x hidden
 
 
-/* ==============================
-   自定义页面始终在背景之上
-   ============================== */
+  .page
+    padding 0 16px
 
-.site-content .home-hero,
-.site-content .home-content,
-.site-content .category-page,
-.site-content .tags-page,
-.site-content .tag-hero,
-.site-content .tag-posts,
-.site-content .about-page
-  position relative
-  z-index 2
+
+  /* ----------------------------------------------------------
+   * 正文
+   * ---------------------------------------------------------- */
+
+  .theme-default-content
+    max-width 100%
+
+    padding 32px 18px
+
+    box-sizing border-box
+
+    font-size 15px
+
+    line-height 1.85
+
+
+  .theme-default-content:not(.custom)
+    max-width 100%
+
+
+  .page .theme-default-content
+    padding-left 0
+
+    padding-right 0
+
+    font-size 15px
+
+    line-height 1.85
+
+
+  .page .theme-default-content p,
+  .page .theme-default-content li
+    font-size 15px
+
+    line-height 1.9
+
+
+  .page .content
+    padding-bottom 40px
+
+
+  /* ----------------------------------------------------------
+   * 文章标题
+   * ---------------------------------------------------------- */
+
+  .page h1,
+  .page .theme-default-content h1
+    font-size 28px
+
+    line-height 1.4
+
+    word-break break-word
+
+
+  .page .theme-default-content h1
+    font-size 1.7rem
+
+
+  .page h2,
+  .page .theme-default-content h2
+    font-size 22px
+
+    line-height 1.45
+
+
+  .page .theme-default-content h2
+    margin-top 2.2rem
+
+
+  .page h3,
+  .page .theme-default-content h3
+    font-size 19px
+
+    line-height 1.5
+
+
+  .page .theme-default-content h3
+    margin-top 1.7rem
+
+
+  /* ----------------------------------------------------------
+   * 首页 Hero
+   * ---------------------------------------------------------- */
+
+  .home
+    padding-left 16px
+
+    padding-right 16px
+
+
+  .home .hero
+    padding-top 30px
+
+    padding-bottom 30px
+
+
+  .home .hero h1
+    margin-bottom 18px
+
+    font-size 30px
+
+    line-height 1.35
+
+    word-break break-word
+
+
+  .home .hero .description
+    padding 0 4px
+
+    font-size 15px
+
+    line-height 1.8
+
+
+  .home .hero .action-button
+    margin 6px 4px
+
+    padding 8px 16px
+
+    font-size 14px
+
+
+  .home .features
+    display block
+
+
+  .home .custom-block
+    margin-left 0
+
+    margin-right 0
+
+
+  /* ----------------------------------------------------------
+   * 首页文章卡片
+   * ---------------------------------------------------------- */
+
+  .post-list,
+  .post-card,
+  .article-card
+    width 100%
+
+    box-sizing border-box
+
+
+  /* ----------------------------------------------------------
+   * 文章代码块
+   * ---------------------------------------------------------- */
+
+  .page .theme-default-content div[class*="language-"]
+    margin 1.3rem 0
+
+    border-radius 7px
+
+
+  .page .theme-default-content div[class*="language-"] pre
+    padding 39px 15px 16px
+
+
+  .page .theme-default-content div[class*="language-"] code
+    font-size 12px
+
+    line-height 1.75
+
+
+  .page .theme-default-content div[class*="language-"]::before
+    height 31px
+
+    padding 0 11px
+
+    font-size 10px
+
+    line-height 31px
+
+
+  .page .theme-default-content div[class*="language-"] button
+    top 2px !important
+
+    right 7px !important
+
+    width 58px !important
+
+    min-width 58px !important
+
+    height 27px !important
+
+    font-size 12px
+
+    line-height 1 !important
+
+
+  .page .theme-default-content div[class*="language-"] .code-copy-btn,
+  .page .theme-default-content div[class*="language-"] .copy-code-btn,
+  .page .theme-default-content div[class*="language-"] .copy-code-button,
+  .page .theme-default-content div[class*="language-"] .code-copy-button
+    top 2px !important
+
+    right 7px !important
+
+    width 58px !important
+
+    min-width 58px !important
+
+    height 27px !important
+
+
+  /* ----------------------------------------------------------
+   * 表格
+   * ---------------------------------------------------------- */
+
+  .theme-default-content table,
+  .page .theme-default-content table
+    display block
+
+    overflow-x auto
+
+    white-space nowrap
+
+
+  /* ----------------------------------------------------------
+   * 图片
+   * ---------------------------------------------------------- */
+
+  .theme-default-content img
+    max-width 100%
+
+    height auto
+
+
+  /* ----------------------------------------------------------
+   * 引用
+   * ---------------------------------------------------------- */
+
+  .theme-default-content blockquote
+    margin-left 0
+
+    margin-right 0
+
+    padding-left 14px
+
+
+  /* ----------------------------------------------------------
+   * 分页
+   * ---------------------------------------------------------- */
+
+  .pagination
+    margin-left 16px
+
+    margin-right 16px
+
+
+  /* ----------------------------------------------------------
+   * 默认上下篇
+   * ---------------------------------------------------------- */
+
+  .page-nav
+    display block
+
+
+  .page-nav .inner
+    display block
+
+
+  .page-nav .next,
+  .page-nav .prev
+    width 100%
+
+    margin-bottom 12px
+
+    box-sizing border-box
+
+
+  /* ----------------------------------------------------------
+   * 目录
+   * ---------------------------------------------------------- */
+
+  .page-toc,
+  .post-toc
+    display none
+
+
+  /* ----------------------------------------------------------
+   * 横向溢出
+   * ---------------------------------------------------------- */
+
+  .content__default
+    overflow-x hidden
+
+
+  /* ----------------------------------------------------------
+   * 文章头部
+   * ---------------------------------------------------------- */
+
+  .post-header-inner
+    width 100%
+
+    max-width 820px
+
+    margin 0 auto
+
+    padding 82px 20px 22px
+
+    box-sizing border-box
+
+
+  .post-header-inner h1
+    margin-bottom 14px
+
+    font-size 1.85rem
+
+    line-height 1.4
+
+
+  /* ----------------------------------------------------------
+   * 返回顶部
+   * ---------------------------------------------------------- */
+
+  .back-top
+    right 17px
+
+    bottom 18px
+
+    width 38px
+
+    height 38px
+
+    line-height 36px
+
+
+  /* ----------------------------------------------------------
+   * 上一篇 / 下一篇
+   * ---------------------------------------------------------- */
+
+  .post-navigation
+    width auto
+
+    margin 40px 0 24px
+
+    padding 0 20px
+
+    grid-template-columns 1fr
+
+    gap 10px
+
+
+  .post-navigation-card
+    min-height 94px
+
+    padding 18px 48px 18px 18px
+
+    border-radius 8px
+
+
+  .post-navigation-card.next
+    padding-left 48px
+
+    padding-right 18px
+
+
+  .navigation-title
+    font-size 14px
+
+    line-height 1.65
+
+
+  .navigation-arrow
+    right 17px
+
+    font-size 17px
+
+
+  .post-navigation-card.next .navigation-arrow
+    left 17px
+
+    right auto
+
+
+  .post-navigation-placeholder
+    display none
+
+
+  /* ----------------------------------------------------------
+   * 分类页
+   *
+   * 桌面 64px
+   * 手机 54px
+   * ---------------------------------------------------------- */
+
+  .category-page
+    padding 54px 18px 55px
+
+
+  .category-page h1
+    font-size 28px
+
+
+  .category-page > p
+    font-size 13px
+
+
+  .category-page ul
+    margin-top 22px
+
+
+  .category-page .category-list
+    display block
+
+    margin-top 22px
+
+
+  .category-page .category-list a
+    min-height 58px
+
+
+  .category-page li a
+    min-height 58px
+
+    padding 0 16px
+
+    font-size 14px
+
+
+  /* ----------------------------------------------------------
+   * 标签页
+   * ---------------------------------------------------------- */
+
+  .tags-page
+    padding 54px 18px 55px
+
+
+  .tags-page h1
+    font-size 28px
+
+
+  .tags-page > p
+    font-size 13px
+
+
+  .tags-page ul,
+  .tags-page .tags-list,
+  .tags-page .tag-list
+    gap 8px
+
+    margin-top 22px
+
+
+  .tags-page li a
+    min-height 32px
+
+    padding 0 11px
+
+    font-size 12px
+
+
+  /* ----------------------------------------------------------
+   * 标签详情
+   * ---------------------------------------------------------- */
+
+  .tag-hero
+    padding 58px 18px 24px
+
+
+  .tag-hero h1
+    font-size 28px
+
+
+  .tag-posts
+    padding 0 18px 55px
+
+
+  .tag-posts article,
+  .tag-posts .post-card,
+  .tag-posts .tag-post-card
+    padding 20px 18px
+
+    border-radius 8px
+
+
+  .tag-posts h2
+    font-size 19px
+
+
+  /* ----------------------------------------------------------
+   * 关于我
+   *
+   * 桌面 64px
+   * 手机 54px
+   * ---------------------------------------------------------- */
+
+  .about-page
+    padding 54px 18px 55px
+
+
+  .about-page h1
+    font-size 28px
+
+
+  .about-page h2
+    margin-top 30px
+
+    font-size 19px
+
+
+  .about-page p
+    font-size 14px
+
+
+  /* ----------------------------------------------------------
+   * Footer
+   * ---------------------------------------------------------- */
+
+  .site-footer
+    margin-top 20px
+
+    padding 28px 18px 20px
+
+
+  .site-footer-inner
+    display flex
+
+    flex-direction column
+
+    align-items flex-start
+
+    gap 14px
+
+
+  .site-footer-right
+    justify-content flex-start
+
+    flex-wrap wrap
+
+    line-height 1.8
+
+
+  .site-footer-bottom
+    margin-top 20px
+
+    padding-top 13px
+
+    text-align left
+
+    line-height 1.8
+
+
+  /* ----------------------------------------------------------
+   * Sidebar
+   * ---------------------------------------------------------- */
+
+  .sidebar
+    padding-top 56px
+
+
+  /* ----------------------------------------------------------
+   * 梅枝背景
+   * ---------------------------------------------------------- */
+
+  .branch-background
+    opacity .72
+    /* ============================================================
+ * 标签详情页：相关文章区域优化
+ * ============================================================ */
+
+.tag-posts
+  margin-top 32px
+  padding 0 4px 30px
+  box-sizing border-box
+
+/* “相关文章”标题 */
+.tag-posts h2,
+.tag-posts h3
+  margin-top 0
+  margin-bottom 20px
+  padding-bottom 10px
+  color #2c3e50
+  line-height 1.5
+
+/* 文章卡片与标题拉开一点距离 */
+.tag-posts .post-card,
+.tag-posts .article-card
+  margin-top 16px
+
+/* 连续卡片之间再留一点呼吸空间 */
+.tag-posts .post-card + .post-card,
+.tag-posts .article-card + .article-card
+  margin-top 18px
+
+

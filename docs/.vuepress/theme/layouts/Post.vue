@@ -1,29 +1,36 @@
 <template>
   <ParentLayout>
     <template slot="page-top">
-      <!-- =========================
+      <!-- ==================================================
            阅读进度条
-           ========================= -->
+           ================================================== -->
 
       <div class="reading-progress">
-        <div class="reading-progress-bar" :style="{ width: readingProgress + '%' }"></div>
+        <div
+          class="reading-progress-bar"
+          :style="{
+            width: readingProgress + '%',
+          }"
+        ></div>
       </div>
 
-      <!-- =========================
+      <!-- ==================================================
            返回顶部
-           ========================= -->
+           ================================================== -->
 
       <button v-show="showBackTop" class="back-top" type="button" @click="backToTop" aria-label="返回顶部">↑</button>
 
-      <!-- =========================
+      <!-- ==================================================
            文章头部
-           ========================= -->
+           ================================================== -->
 
       <div class="post-header">
         <div class="post-header-inner">
           <h1>
             {{ $page.title }}
           </h1>
+
+          <!-- 日期 / 分类 -->
 
           <div class="post-meta">
             <span v-if="$page.frontmatter.date" class="post-date">
@@ -39,15 +46,22 @@
             </span>
           </div>
 
-          <div v-if="$page.frontmatter.tags" class="post-tags">
-            <router-link v-for="tag in $page.frontmatter.tags" :key="tag" :to="getTagPath(tag)" class="tag"> # {{ tag }} </router-link>
+          <!-- ==================================================
+               标签
+
+               这里必须使用 router-link。
+               不使用普通 a 标签。
+               ================================================== -->
+
+          <div v-if="normalizedTags($page.frontmatter.tags).length" class="post-tags">
+            <router-link v-for="tag in normalizedTags($page.frontmatter.tags)" :key="tag" :to="getTagPath(tag)" class="tag"> # {{ tag }} </router-link>
           </div>
         </div>
       </div>
 
-      <!-- =========================
+      <!-- ==================================================
            文章目录
-           ========================= -->
+           ================================================== -->
 
       <aside v-if="$page.headers && $page.headers.length" class="post-toc">
         <div class="toc-title">文章目录</div>
@@ -72,29 +86,41 @@
       </aside>
     </template>
 
-    <template slot="page-bottom">
-      <!-- =========================
-           上一篇 / 下一篇
-           ========================= -->
+    <!-- ==================================================
+         上一篇 / 下一篇
+         ================================================== -->
 
-      <div class="post-navigation">
+    <template slot="page-bottom">
+      <div v-if="previousPost || nextPost" class="post-navigation">
+        <!-- 上一篇 -->
+
         <router-link v-if="previousPost" :to="previousPost.path" class="post-navigation-card previous">
-          <div class="navigation-label">← 上一篇</div>
+          <div class="navigation-label">上一篇</div>
 
           <div class="navigation-title">
             {{ previousPost.title }}
           </div>
+
+          <div class="navigation-arrow">←</div>
         </router-link>
+
+        <!-- 没有上一篇 -->
 
         <div v-else class="post-navigation-placeholder"></div>
 
+        <!-- 下一篇 -->
+
         <router-link v-if="nextPost" :to="nextPost.path" class="post-navigation-card next">
-          <div class="navigation-label">下一篇 →</div>
+          <div class="navigation-label">下一篇</div>
 
           <div class="navigation-title">
             {{ nextPost.title }}
           </div>
+
+          <div class="navigation-arrow">→</div>
         </router-link>
+
+        <!-- 没有下一篇 -->
 
         <div v-else class="post-navigation-placeholder"></div>
       </div>
@@ -130,20 +156,27 @@ export default {
 
   computed: {
     /*
-     * ========================================
+     * ==================================================
      * 所有博客文章
-     * ========================================
+     * ==================================================
      */
 
     blogPosts() {
       return this.$site.pages
+
         .filter((page) => {
           return page.path.startsWith('/posts/') && page.frontmatter && page.frontmatter.date
         })
+
         .sort((a, b) => {
           const dateA = new Date(a.frontmatter.date).getTime()
 
           const dateB = new Date(b.frontmatter.date).getTime()
+
+          /*
+           * 日期相同的时候，
+           * 再按照路径排序。
+           */
 
           if (dateA === dateB) {
             return a.path.localeCompare(b.path)
@@ -154,9 +187,9 @@ export default {
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 当前文章位置
-     * ========================================
+     * ==================================================
      */
 
     currentPostIndex() {
@@ -164,9 +197,9 @@ export default {
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 上一篇
-     * ========================================
+     * ==================================================
      */
 
     previousPost() {
@@ -178,9 +211,9 @@ export default {
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 下一篇
-     * ========================================
+     * ==================================================
      */
 
     nextPost() {
@@ -202,13 +235,13 @@ export default {
     })
 
     /*
-     * 初始化
+     * 初始化阅读进度
      */
 
     this.handleScroll()
 
     /*
-     * 初始化目录观察
+     * 初始化目录
      */
 
     this.$nextTick(() => {
@@ -217,29 +250,38 @@ export default {
   },
 
   beforeDestroy() {
+    /*
+     * 移除滚动监听
+     */
+
     window.removeEventListener('scroll', this.handleScroll)
 
     /*
-     * 销毁目录观察器
+     * 销毁目录观察
      */
 
     if (this.tocObserver) {
       this.tocObserver.disconnect()
+
       this.tocObserver = null
     }
   },
 
   methods: {
     /*
-     * ========================================
+     * ==================================================
      * 滚动监听
-     * ========================================
+     * ==================================================
      */
 
     handleScroll() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0
 
       const documentHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight
+
+      /*
+       * 页面没有产生滚动
+       */
 
       if (documentHeight <= 0) {
         this.readingProgress = 0
@@ -249,15 +291,23 @@ export default {
         return
       }
 
+      /*
+       * 阅读进度百分比
+       */
+
       this.readingProgress = Math.min(100, Math.max(0, (scrollTop / documentHeight) * 100))
+
+      /*
+       * 超过 300px 显示返回顶部
+       */
 
       this.showBackTop = scrollTop > 300
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 返回顶部
-     * ========================================
+     * ==================================================
      */
 
     backToTop() {
@@ -268,9 +318,9 @@ export default {
     },
 
     /*
-     * ========================================
-     * 初始化 TOC Observer
-     * ========================================
+     * ==================================================
+     * 初始化 TOC
+     * ==================================================
      */
 
     initTocObserver() {
@@ -283,7 +333,7 @@ export default {
       }
 
       /*
-       * 不支持 IntersectionObserver
+       * 浏览器不支持
        */
 
       if (!('IntersectionObserver' in window)) {
@@ -291,8 +341,7 @@ export default {
       }
 
       /*
-       * 如果之前存在
-       * 先销毁
+       * 销毁旧 Observer
        */
 
       if (this.tocObserver) {
@@ -302,12 +351,20 @@ export default {
       }
 
       /*
-       * 创建观察器
+       * 创建 Observer
        */
 
       this.tocObserver = new IntersectionObserver(
         (entries) => {
-          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+          /*
+           * 当前进入观察区域的标题
+           */
+
+          const visible = entries
+
+            .filter((entry) => entry.isIntersecting)
+
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
 
           if (visible.length) {
             this.activeToc = visible[0].target.id
@@ -316,16 +373,18 @@ export default {
           }
 
           /*
-           * 当前没有元素完全进入观察区时，
-           * 找距离顶部最近的标题
+           * 如果没有标题直接进入观察区，
+           * 找距离顶部最近的标题。
            */
 
           const candidates = entries
+
             .map((entry) => ({
               id: entry.target.id,
 
               top: Math.abs(entry.boundingClientRect.top),
             }))
+
             .sort((a, b) => a.top - b.top)
 
           if (candidates.length) {
@@ -336,7 +395,7 @@ export default {
           root: null,
 
           /*
-           * 顶部预留导航栏空间
+           * 为顶部导航留空间
            */
 
           rootMargin: '-90px 0px -65% 0px',
@@ -346,7 +405,7 @@ export default {
       )
 
       /*
-       * 开始观察所有标题
+       * 观察所有标题
        */
 
       this.$page.headers.forEach((header) => {
@@ -358,7 +417,7 @@ export default {
       })
 
       /*
-       * 初始状态
+       * 默认选中第一个标题
        */
 
       if (this.$page.headers.length) {
@@ -367,9 +426,9 @@ export default {
     },
 
     /*
-     * ========================================
-     * 点击目录平滑滚动
-     * ========================================
+     * ==================================================
+     * TOC 点击滚动
+     * ==================================================
      */
 
     scrollToHeading(slug) {
@@ -378,6 +437,10 @@ export default {
       if (!element) {
         return
       }
+
+      /*
+       * 顶部导航高度
+       */
 
       const navbarHeight = 80
 
@@ -390,10 +453,14 @@ export default {
         behavior: 'smooth',
       })
 
+      /*
+       * 更新当前目录
+       */
+
       this.activeToc = slug
 
       /*
-       * 修改 URL hash
+       * 更新 hash
        */
 
       if (window.history && window.history.replaceState) {
@@ -402,9 +469,9 @@ export default {
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 日期格式
-     * ========================================
+     * ==================================================
      */
 
     formatDate(date) {
@@ -428,70 +495,181 @@ export default {
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 分类地址
-     * ========================================
+     * ==================================================
      */
 
     getCategoryPath(category) {
-      return `/category/${encodeURIComponent(category)}/`
+      const value = String(category == null ? '' : category).trim()
+
+      if (!value) {
+        return '/category/'
+      }
+
+      /*
+       * 注意：
+       *
+       * 不在这里手动编码。
+       *
+       * router-link 会负责
+       * Vue Router 的路径处理。
+       */
+
+      return `/category/${value}/`
     },
 
     /*
-     * ========================================
+     * ==================================================
      * 标签地址
-     * ========================================
+     * ==================================================
+     *
+     * 关键修复：
+     *
+     * 不再使用：
+     *
+     * encodeURIComponent(tag)
+     *
+     * 也不再使用：
+     *
+     * <a href="">
+     *
+     * 而是直接生成 VuePress
+     * 内部路由：
+     *
+     * /tags/闭包/
+     *
+     * 再交给 router-link 处理。
+     * ==================================================
      */
 
     getTagPath(tag) {
-      return `/tags/${encodeURIComponent(tag)}/`
+      const value = String(tag == null ? '' : tag).trim()
+
+      if (!value) {
+        return '/tags/'
+      }
+
+      return `/tags/${value}/`
+    },
+
+    /*
+     * ==================================================
+     * tags 标准化
+     * ==================================================
+     *
+     * 支持：
+     *
+     * tags:
+     *   - JavaScript
+     *   - 闭包
+     *
+     * 也兼容：
+     *
+     * tags: JavaScript
+     * ==================================================
+     */
+
+    normalizedTags(tags) {
+      if (!tags) {
+        return []
+      }
+
+      if (Array.isArray(tags)) {
+        return tags.map((tag) => String(tag == null ? '' : tag).trim()).filter(Boolean)
+      }
+
+      const value = String(tags).trim()
+
+      return value ? [value] : []
     },
   },
 }
 </script>
 
 <style scoped>
-/* =========================
+/* =========================================================
    文章头部
-   ========================= */
+   ========================================================= */
 
 .post-header {
+  position: relative;
+
   width: 100%;
 }
 
 .post-header-inner {
-  max-width: 820px;
+  max-width: 880px;
+
   margin: 0 auto;
-  padding: 92px 40px 20px;
+
+  padding: 88px 20px 26px;
+
   box-sizing: border-box;
+
   text-align: left;
 }
 
 .post-header-inner h1 {
-  margin-top: 0;
-  margin-bottom: 18px;
+  margin: 0 0 18px;
 
   color: #2c3e50;
 
-  font-size: 2.2rem;
+  font-size: 2.35rem;
 
-  line-height: 1.4;
+  font-weight: 650;
+
+  line-height: 1.38;
+
+  letter-spacing: -0.015em;
 
   text-align: left;
 }
 
-/* =========================
-   文章元信息
-   ========================= */
+/* 标题底部短线 */
+
+.post-header-inner::after {
+  content: '';
+
+  display: block;
+
+  width: 46px;
+
+  height: 2px;
+
+  margin-top: 22px;
+
+  border-radius: 2px;
+
+  background: #3eaf7c;
+
+  opacity: 0.7;
+}
+
+/* =========================================================
+   元信息
+   ========================================================= */
 
 .post-meta {
   display: flex;
 
   align-items: center;
 
+  flex-wrap: wrap;
+
+  min-height: 24px;
+
+  color: #a0a0a0;
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+.post-date {
   color: #999;
 
-  font-size: 14px;
+  letter-spacing: 0.02em;
 }
 
 .post-category {
@@ -504,84 +682,100 @@ export default {
   color: #3eaf7c;
 
   text-decoration: none;
+
+  transition: color 0.2s ease;
 }
 
 .post-category a:hover {
   color: #2c3e50;
+
+  text-decoration: none;
 }
 
 .separator {
   margin: 0 10px;
 
-  color: #ccc;
+  color: #d5d5d5;
 }
 
-/* =========================
+/* =========================================================
    标签
-   ========================= */
+   ========================================================= */
 
 .post-tags {
   display: flex;
 
   flex-wrap: wrap;
 
-  gap: 8px;
+  gap: 7px;
 
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 .tag {
-  display: inline-block;
+  display: inline-flex;
 
-  padding: 4px 10px;
+  align-items: center;
 
-  border-radius: 4px;
+  padding: 4px 9px;
 
-  background: #f5f5f5;
+  border: 1px solid #eeeeee;
 
-  color: #666;
+  border-radius: 5px;
+
+  background: rgba(248, 250, 249, 0.8);
+
+  color: #888;
 
   font-size: 12px;
 
+  line-height: 1.4;
+
   text-decoration: none;
 
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .tag:hover {
-  background: #e8f5ef;
+  border-color: #d8ebe1;
+
+  background: #f4faf7;
 
   color: #3eaf7c;
+
+  transform: translateY(-1px);
+
+  text-decoration: none;
 }
 
-/* =========================
+/* =========================================================
    文章目录
-   ========================= */
+   ========================================================= */
 
 .post-toc {
   position: fixed;
 
   top: 120px;
 
-  right: 30px;
+  right: 26px;
 
-  width: 220px;
+  width: 210px;
 
   max-height: calc(100vh - 160px);
 
-  padding: 18px;
-
-  border-left: 1px solid #eaecef;
-
-  background: rgba(255, 255, 255, 0.94);
+  padding: 16px 14px;
 
   box-sizing: border-box;
+
+  border-left: 1px solid #eeeeee;
+
+  background: rgba(255, 255, 255, 0.92);
 
   overflow-y: auto;
 }
 
 .toc-title {
-  margin-bottom: 12px;
+  margin-bottom: 13px;
 
   color: #2c3e50;
 
@@ -599,13 +793,13 @@ export default {
 }
 
 .toc-item {
-  margin: 4px 0;
+  margin: 3px 0;
 }
 
 .post-toc a {
   display: block;
 
-  padding: 4px 8px;
+  padding: 5px 7px;
 
   border-left: 2px solid transparent;
 
@@ -613,7 +807,7 @@ export default {
 
   font-size: 13px;
 
-  line-height: 1.5;
+  line-height: 1.55;
 
   text-decoration: none;
 
@@ -622,6 +816,8 @@ export default {
 
 .post-toc a:hover {
   color: #3eaf7c;
+
+  text-decoration: none;
 }
 
 .toc-item.active > a {
@@ -646,9 +842,9 @@ export default {
   padding-left: 36px;
 }
 
-/* =========================
-   阅读进度条
-   ========================= */
+/* =========================================================
+   阅读进度
+   ========================================================= */
 
 .reading-progress {
   position: fixed;
@@ -661,9 +857,11 @@ export default {
 
   width: 100%;
 
-  height: 3px;
+  height: 2px;
 
   pointer-events: none;
+
+  background: rgba(0, 0, 0, 0.025);
 }
 
 .reading-progress-bar {
@@ -671,67 +869,79 @@ export default {
 
   background: #3eaf7c;
 
-  transition: width 0.1s ease;
+  box-shadow: 0 0 6px rgba(62, 175, 124, 0.18);
+
+  transition: width 0.08s linear;
 }
 
-/* =========================
+/* =========================================================
    返回顶部
-   ========================= */
+   ========================================================= */
 
 .back-top {
   position: fixed;
 
-  right: 30px;
+  right: 28px;
 
-  bottom: 30px;
+  bottom: 28px;
 
   z-index: 1000;
 
-  width: 42px;
+  width: 40px;
 
-  height: 42px;
+  height: 40px;
 
   padding: 0;
 
-  border: 1px solid #eaecef;
+  border: 1px solid #e6e9eb;
 
   border-radius: 50%;
 
-  background: #fff;
+  background: rgba(255, 255, 255, 0.94);
 
-  color: #3eaf7c;
+  color: #8b9a92;
 
-  font-size: 20px;
+  font-size: 17px;
 
-  line-height: 40px;
+  font-weight: 400;
+
+  line-height: 38px;
 
   text-align: center;
 
   cursor: pointer;
 
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
 
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .back-top:hover {
   transform: translateY(-3px);
 
-  background: #f8faf9;
+  border-color: #d8ebe1;
 
-  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.12);
+  background: #f7fbf9;
+
+  color: #3eaf7c;
+
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
 }
 
-/* =========================
+/* =========================================================
    上一篇 / 下一篇
-   ========================= */
+   ========================================================= */
 
 .post-navigation {
-  max-width: 820px;
+  max-width: 880px;
 
-  margin: 45px auto 20px;
+  margin: 58px auto 36px;
 
-  padding: 0 40px;
+  padding: 0 20px;
 
   box-sizing: border-box;
 
@@ -739,79 +949,164 @@ export default {
 
   grid-template-columns: 1fr 1fr;
 
-  gap: 20px;
+  gap: 18px;
 }
 
 .post-navigation-card {
+  position: relative;
+
   display: block;
 
-  min-height: 95px;
+  min-height: 116px;
 
-  padding: 20px 22px;
+  padding: 22px 56px 22px 22px;
 
   box-sizing: border-box;
 
-  border: 1px solid #eaecef;
+  border: 1px solid #eeeeee;
 
   border-radius: 10px;
 
-  background: #fff;
+  background: rgba(255, 255, 255, 0.82);
 
   text-decoration: none;
 
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.post-navigation-card::before {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+
+  top: 0;
+
+  bottom: 0;
+
+  width: 2px;
+
+  background: #3eaf7c;
+
+  opacity: 0;
+
+  transition: opacity 0.22s ease;
 }
 
 .post-navigation-card:hover {
   transform: translateY(-3px);
 
-  border-color: #d7eee3;
+  border-color: #dfece5;
 
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.06);
+  background: rgba(255, 255, 255, 0.97);
+
+  box-shadow: 0 9px 26px rgba(0, 0, 0, 0.045);
 
   text-decoration: none;
 }
 
+.post-navigation-card:hover::before {
+  opacity: 1;
+}
+
 .navigation-label {
-  margin-bottom: 10px;
+  margin-bottom: 9px;
 
-  color: #999;
+  color: #aaa;
 
-  font-size: 13px;
+  font-size: 12px;
+
+  line-height: 1.5;
+
+  letter-spacing: 0.02em;
 }
 
 .navigation-title {
-  color: #2c3e50;
+  color: #374151;
 
   font-size: 15px;
 
-  font-weight: 500;
+  font-weight: 600;
 
-  line-height: 1.6;
+  line-height: 1.7;
+
+  transition: color 0.2s ease;
 }
 
 .post-navigation-card:hover .navigation-title {
   color: #3eaf7c;
 }
 
-.post-navigation-placeholder {
-  min-height: 95px;
+.navigation-arrow {
+  position: absolute;
+
+  top: 50%;
+
+  right: 21px;
+
+  color: #b9c0bd;
+
+  font-size: 19px;
+
+  line-height: 1;
+
+  transform: translateY(-50%);
+
+  transition: color 0.2s ease, transform 0.2s ease;
 }
 
-/* =========================
-   移动端
-   ========================= */
+.post-navigation-card.previous:hover .navigation-arrow {
+  color: #3eaf7c;
 
-/* =========================
+  transform: translate(-3px, -50%);
+}
+
+/* 下一篇 */
+
+.post-navigation-card.next {
+  padding-left: 56px;
+
+  padding-right: 22px;
+
+  text-align: right;
+}
+
+.post-navigation-card.next::before {
+  left: auto;
+
+  right: 0;
+}
+
+.post-navigation-card.next .navigation-arrow {
+  right: auto;
+
+  left: 21px;
+}
+
+.post-navigation-card.next:hover .navigation-arrow {
+  color: #3eaf7c;
+
+  transform: translate(3px, -50%);
+}
+
+/* 占位 */
+
+.post-navigation-placeholder {
+  min-height: 116px;
+
+  visibility: hidden;
+
+  pointer-events: none;
+}
+
+/* =========================================================
    平板
-   769px - 1200px
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 1200px) and (min-width: 769px) {
-  /*
-   * 右侧目录
-   */
-
   .post-toc {
     position: fixed;
 
@@ -830,12 +1125,6 @@ export default {
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   }
 
-  /*
-   * 文章头部
-   *
-   * 给右侧目录留出空间
-   */
-
   .post-header-inner {
     max-width: none;
 
@@ -846,31 +1135,7 @@ export default {
     margin-right: 220px;
 
     padding: 92px 20px 20px;
-
-    box-sizing: border-box;
   }
-
-  /*
-   * 正文区域
-   *
-   * VuePress 默认正文容器
-   */
-
-  .theme-default-content {
-    max-width: none;
-
-    width: calc(100% - 250px);
-
-    margin-left: 30px;
-
-    margin-right: 220px;
-
-    box-sizing: border-box;
-  }
-
-  /*
-   * 上一篇 / 下一篇
-   */
 
   .post-navigation {
     max-width: none;
@@ -882,13 +1147,7 @@ export default {
     margin-right: 220px;
 
     padding: 0 20px;
-
-    box-sizing: border-box;
   }
-
-  /*
-   * 目录文字稍微紧凑一些
-   */
 
   .post-toc a {
     font-size: 12px;
@@ -901,23 +1160,14 @@ export default {
   }
 }
 
-/* =========================
+/* =========================================================
    手机
-   768px 以下
-   ========================= */
+   ========================================================= */
 
 @media (max-width: 768px) {
-  /*
-   * 手机隐藏目录
-   */
-
   .post-toc {
     display: none;
   }
-
-  /*
-   * 文章头部恢复全宽
-   */
 
   .post-header-inner {
     width: 100%;
@@ -926,57 +1176,105 @@ export default {
 
     margin: 0 auto;
 
-    padding: 84px 20px 18px;
+    padding: 82px 20px 22px;
 
     box-sizing: border-box;
   }
 
   .post-header-inner h1 {
-    font-size: 1.8rem;
+    margin-bottom: 14px;
+
+    font-size: 1.85rem;
+
+    line-height: 1.4;
+
+    word-break: break-word;
   }
 
-  /*
-   * 正文恢复默认宽度
-   */
+  .post-header-inner::after {
+    width: 38px;
 
-  .theme-default-content {
-    width: auto;
-
-    margin-left: auto;
-
-    margin-right: auto;
+    margin-top: 18px;
   }
 
-  /*
-   * 返回顶部
-   */
+  .post-meta {
+    font-size: 12px;
+  }
+
+  .post-tags {
+    margin-top: 14px;
+
+    gap: 6px;
+  }
+
+  .tag {
+    padding: 3px 8px;
+
+    font-size: 11px;
+  }
 
   .back-top {
-    right: 18px;
+    right: 17px;
 
-    bottom: 20px;
+    bottom: 18px;
 
     width: 38px;
 
     height: 38px;
 
+    font-size: 16px;
+
     line-height: 36px;
   }
-
-  /*
-   * 上一篇 / 下一篇
-   */
 
   .post-navigation {
     width: auto;
 
-    margin: 35px 0 20px;
+    margin: 40px 0 24px;
 
     padding: 0 20px;
 
     grid-template-columns: 1fr;
 
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .post-navigation-card {
+    min-height: 94px;
+
+    padding: 18px 48px 18px 18px;
+
+    border-radius: 8px;
+  }
+
+  .post-navigation-card.next {
+    padding-left: 48px;
+
+    padding-right: 18px;
+  }
+
+  .navigation-label {
+    margin-bottom: 7px;
+
+    font-size: 11px;
+  }
+
+  .navigation-title {
+    font-size: 14px;
+
+    line-height: 1.65;
+  }
+
+  .navigation-arrow {
+    right: 17px;
+
+    font-size: 17px;
+  }
+
+  .post-navigation-card.next .navigation-arrow {
+    left: 17px;
+
+    right: auto;
   }
 
   .post-navigation-placeholder {

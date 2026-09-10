@@ -1,215 +1,40 @@
 module.exports = {
+  /*
+   * ==================================================
+   * GitHub Pages
+   * ==================================================
+   */
+
   base: '/bolg-l/',
 
   /*
-   * ========================================
+   * ==================================================
    * 网站基础信息
-   * ========================================
+   * ==================================================
    */
+
   title: '我的博客',
 
-  description: '记录学习、分享技术、持续成长的个人博客',
+  description: '我的个人技术博客',
 
   /*
-   * ========================================
-   * HTML head
-   * ========================================
-   */
-  head: [
-    [
-      'meta',
-      {
-        name: 'viewport',
-        content: 'width=device-width,initial-scale=1',
-      },
-    ],
-
-    [
-      'meta',
-      {
-        name: 'theme-color',
-        content: '#ffffff',
-      },
-    ],
-
-    [
-      'meta',
-      {
-        name: 'author',
-        content: '我的博客',
-      },
-    ],
-  ],
-
-  /*
-   * ========================================
-   * 自动生成页面 SEO
-   * ========================================
-   */
-  extendPageData(page) {
-    const frontmatter = page.frontmatter || {}
-
-    const title = frontmatter.title || page.title || '我的博客'
-
-    const siteTitle = '我的博客'
-
-    /*
-     * ----------------------------------------
-     * 只处理文章
-     * ----------------------------------------
-     */
-    const isPost = page.path.startsWith('/posts/')
-
-    if (isPost) {
-      /*
-       * 如果文章自己已经写了 description
-       * 就优先使用文章自己的描述
-       */
-      if (!frontmatter.description) {
-        frontmatter.description = `${title}，记录我的学习、实践与技术总结。`
-      }
-
-      /*
-       * 自动生成 keywords
-       */
-      if (!frontmatter.meta) {
-        frontmatter.meta = []
-      }
-
-      const existingKeywords = frontmatter.meta.find((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].name === 'keywords'
-      })
-
-      if (!existingKeywords) {
-        const keywords = []
-
-        if (frontmatter.category) {
-          keywords.push(frontmatter.category)
-        }
-
-        if (Array.isArray(frontmatter.tags)) {
-          frontmatter.tags.forEach((tag) => {
-            if (tag && !keywords.includes(tag)) {
-              keywords.push(tag)
-            }
-          })
-        }
-
-        if (keywords.length) {
-          frontmatter.meta.push([
-            'meta',
-            {
-              name: 'keywords',
-              content: keywords.join(','),
-            },
-          ])
-        }
-      }
-
-      /*
-       * Open Graph
-       */
-      const hasOgTitle = frontmatter.meta.some((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].property === 'og:title'
-      })
-
-      if (!hasOgTitle) {
-        frontmatter.meta.push([
-          'meta',
-          {
-            property: 'og:title',
-            content: title,
-          },
-        ])
-      }
-
-      const hasOgDescription = frontmatter.meta.some((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].property === 'og:description'
-      })
-
-      if (!hasOgDescription) {
-        frontmatter.meta.push([
-          'meta',
-          {
-            property: 'og:description',
-            content: frontmatter.description,
-          },
-        ])
-      }
-
-      const hasOgType = frontmatter.meta.some((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].property === 'og:type'
-      })
-
-      if (!hasOgType) {
-        frontmatter.meta.push([
-          'meta',
-          {
-            property: 'og:type',
-            content: 'article',
-          },
-        ])
-      }
-
-      const hasOgUrl = frontmatter.meta.some((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].property === 'og:url'
-      })
-
-      if (!hasOgUrl) {
-        frontmatter.meta.push([
-          'meta',
-          {
-            property: 'og:url',
-            content: `https://fmdenuit530.github.io/bolg-l${page.path}`,
-          },
-        ])
-      }
-
-      /*
-       * Twitter Card
-       */
-      const hasTwitterCard = frontmatter.meta.some((item) => {
-        return item && item[0] === 'meta' && item[1] && item[1].name === 'twitter:card'
-      })
-
-      if (!hasTwitterCard) {
-        frontmatter.meta.push([
-          'meta',
-          {
-            name: 'twitter:card',
-            content: 'summary',
-          },
-        ])
-      }
-
-      /*
-       * Canonical URL
-       */
-      if (!frontmatter.canonicalUrl) {
-        frontmatter.canonicalUrl = `https://fmdenuit530.github.io/bolg-l${page.path}`
-      }
-
-      /*
-       * 页面标题
-       *
-       * 最终：
-       * JavaScript Promise | 我的博客
-       */
-      if (!frontmatter.metaTitle) {
-        frontmatter.metaTitle = `${title} | ${siteTitle}`
-      }
-    }
-  },
-
-  /*
-   * ========================================
+   * ==================================================
    * 主题配置
-   * ========================================
+   * ==================================================
    */
+
   themeConfig: {
+    /*
+     * GitHub
+     */
+
     repo: 'FMdenuit530/bolg-l',
 
     repoLabel: 'GitHub',
+
+    /*
+     * 顶部导航
+     */
 
     nav: [
       {
@@ -233,7 +58,15 @@ module.exports = {
       },
     ],
 
+    /*
+     * 更新信息
+     */
+
     lastUpdated: '最后更新',
+
+    /*
+     * VuePress 默认上一页 / 下一页
+     */
 
     nextLinks: true,
 
@@ -241,37 +74,82 @@ module.exports = {
   },
 
   /*
-   * ========================================
-   * 插件
-   * ========================================
+   * ==================================================
+   * VuePress Blog Plugin
+   * ==================================================
    */
+
   plugins: [
     [
       '@vuepress/blog',
+
       {
+        /*
+         * ==============================================
+         * 文章目录
+         * ==============================================
+         */
+
         directories: [
           {
+            /*
+             * 唯一 ID
+             */
             id: 'post',
 
+            /*
+             * Markdown 所在目录
+             */
             dirname: '_posts',
 
+            /*
+             * 首页
+             */
             path: '/',
 
+            /*
+             * 首页布局
+             */
             layout: 'IndexPost',
 
+            /*
+             * 文章详情布局
+             */
             itemLayout: 'Post',
 
+            /*
+             * 文章永久链接
+             */
             itemPermalink: '/posts/:year/:month/:day/:slug.html',
 
+            /*
+             * 首页分页
+             */
             pagination: {
+              /*
+               * 每页 2 篇
+               */
               lengthPerPage: 2,
 
+              /*
+               * 第 2 页使用这个布局
+               */
               layout: 'DirectoryPagination',
             },
           },
         ],
 
+        /*
+         * ==============================================
+         * 分类 + 标签
+         * ==============================================
+         */
+
         frontmatters: [
+          /*
+           * 分类
+           */
+
           {
             id: 'category',
 
@@ -284,10 +162,26 @@ module.exports = {
             scopeLayout: 'CategoryList',
           },
 
+          /*
+           * 标签
+           *
+           * 同时支持：
+           *
+           * tags:
+           *   - JavaScript
+           *
+           * 以及：
+           *
+           * tag: JavaScript
+           *
+           * 这样以后不会因为
+           * tag / tags 写法不同导致 404。
+           */
+
           {
             id: 'tag',
 
-            keys: ['tags'],
+            keys: ['tag', 'tags'],
 
             path: '/tags/',
 
@@ -296,13 +190,6 @@ module.exports = {
             scopeLayout: 'Tag',
           },
         ],
-      },
-    ],
-
-    [
-      'sitemap',
-      {
-        hostname: 'https://fmdenuit530.github.io/bolg-l/',
       },
     ],
   ],

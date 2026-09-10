@@ -1,88 +1,88 @@
 <template>
   <ParentLayout>
     <template slot="page-top">
-      <!-- =========================
-           标签页头部
-           ========================= -->
+      <div class="tag-detail-page">
+        <!-- ==============================
+             页面头部
+             ============================== -->
+        <header class="tag-detail-header">
+          <div class="tag-detail-label">标签</div>
 
-      <section class="tag-hero">
-        <div class="tag-hero-inner">
-          <div class="tag-kicker">TAG</div>
+          <h1 class="tag-detail-title">
+            {{ tagName }}
+          </h1>
 
-          <h1>#{{ $frontmatter.title || $page.title }}</h1>
+          <p class="tag-detail-description">查看使用「{{ tagName }}」标签的相关文章</p>
+        </header>
 
-          <p>浏览这个标签下的相关文章</p>
-        </div>
-      </section>
-    </template>
+        <!-- ==============================
+             相关文章
+             ============================== -->
+        <section class="tag-articles">
+          <div class="tag-articles-title-row">
+            <h2 class="tag-articles-title">相关文章</h2>
 
-    <!-- =========================
-         标签文章
-         ========================= -->
+            <span class="tag-articles-count"> {{ tagPosts.length }} 篇 </span>
+          </div>
 
-    <template slot="page-bottom">
-      <section v-if="$pagination && $pagination.pages && $pagination.pages.length" class="tag-posts">
-        <div class="tag-posts-inner">
-          <div class="tag-section-title">相关文章</div>
-
-          <div class="tag-post-list">
-            <article v-for="post in $pagination.pages" :key="post.path" class="tag-post-card">
+          <!-- 有文章 -->
+          <div v-if="tagPosts.length" class="tag-articles-list">
+            <article v-for="post in tagPosts" :key="post.path" class="tag-article-item">
               <!-- 日期 -->
+              <div class="tag-article-meta">
+                <span v-if="post.frontmatter && post.frontmatter.date" class="tag-article-date">
+                  {{ formatDate(post.frontmatter.date) }}
+                </span>
 
-              <div class="tag-post-date">
-                {{ formatDate(post.frontmatter.date) }}
+                <span v-if="post.frontmatter && post.frontmatter.category" class="tag-article-category">
+                  <span class="tag-meta-dot">·</span>
+
+                  {{ post.frontmatter.category }}
+                </span>
               </div>
 
               <!-- 标题 -->
+              <router-link :to="post.path" class="tag-article-title">
+                {{ post.title }}
+              </router-link>
 
-              <h2>
-                <router-link :to="post.path">
-                  {{ post.title }}
-                </router-link>
-              </h2>
-
-              <!-- 分类 -->
-
-              <div class="tag-post-meta">
-                <router-link v-if="post.frontmatter.category" :to="getCategoryPath(post.frontmatter.category)">
-                  {{ post.frontmatter.category }}
-                </router-link>
+              <!-- 描述 -->
+              <div v-if="post.frontmatter && post.frontmatter.description" class="tag-article-description">
+                {{ post.frontmatter.description }}
               </div>
 
               <!-- 标签 -->
-
-              <div v-if="post.frontmatter.tags && post.frontmatter.tags.length" class="tag-post-tags">
-                <router-link v-for="tag in post.frontmatter.tags" :key="tag" :to="getTagPath(tag)"> #{{ tag }} </router-link>
+              <div v-if="getPostTags(post).length" class="tag-article-tags">
+                <router-link v-for="tag in getPostTags(post)" :key="tag" :to="getTagPath(tag)" class="tag-article-tag"> # {{ tag }} </router-link>
               </div>
 
-              <!-- 摘要 -->
-
-              <p v-if="post.frontmatter.description" class="tag-post-description">
-                {{ post.frontmatter.description }}
-              </p>
-
-              <!-- 阅读 -->
-
-              <router-link :to="post.path" class="tag-post-read">
+              <!-- 阅读全文 -->
+              <router-link :to="post.path" class="tag-article-read">
                 阅读全文
                 <span>→</span>
               </router-link>
             </article>
           </div>
-        </div>
-      </section>
 
-      <!-- =========================
-           没有文章
-           ========================= -->
+          <!-- 没有文章 -->
+          <div v-else class="tag-empty">
+            <div class="tag-empty-title">暂无相关文章</div>
 
-      <section v-else class="tag-empty">
-        <div class="tag-empty-inner">
-          <div class="tag-empty-title">暂无相关文章</div>
+            <div class="tag-empty-description">这个标签目前还没有对应的文章。</div>
+          </div>
 
-          <router-link to="/tags/" class="tag-empty-link"> ← 返回标签 </router-link>
-        </div>
-      </section>
+          <!-- ==============================
+               分页
+               ============================== -->
+          <div v-if="paginationVisible" class="tag-pagination">
+            <router-link v-if="$pagination.hasPrev" :to="$pagination.prevLink" class="tag-pagination-button"> ← 上一页 </router-link>
+
+            <span class="tag-pagination-current"> 第 {{ currentPage }} 页 </span>
+
+            <router-link v-if="$pagination.hasNext" :to="$pagination.nextLink" class="tag-pagination-button"> 下一页 → </router-link>
+          </div>
+        </section>
+      </div>
     </template>
   </ParentLayout>
 </template>
@@ -97,11 +97,71 @@ export default {
     ParentLayout,
   },
 
-  methods: {
-    /* =========================
-       日期
-       ========================= */
+  computed: {
+    /* ========================================
+     * 当前标签名称
+     * ======================================== */
+    tagName() {
+      const path = this.$route && this.$route.path ? this.$route.path : ''
 
+      const match = path.match(/^\/tags\/(.+?)\/?$/)
+
+      if (match && match[1]) {
+        try {
+          return decodeURIComponent(match[1])
+        } catch (e) {
+          return match[1]
+        }
+      }
+
+      return '标签'
+    },
+
+    /* ========================================
+     * 当前标签下的文章
+     * ======================================== */
+    tagPosts() {
+      if (!this.$pagination || !Array.isArray(this.$pagination.pages)) {
+        return []
+      }
+
+      return this.$pagination.pages
+        .filter((page) => {
+          return page && page.frontmatter && page.frontmatter.date
+        })
+        .slice()
+        .sort((a, b) => {
+          const dateA = new Date(a.frontmatter.date).getTime()
+
+          const dateB = new Date(b.frontmatter.date).getTime()
+
+          return dateB - dateA
+        })
+    },
+
+    /* ========================================
+     * 是否显示分页
+     * ======================================== */
+    paginationVisible() {
+      return !!(this.$pagination && (this.$pagination.hasPrev || this.$pagination.hasNext))
+    },
+
+    /* ========================================
+     * 当前页码
+     * ======================================== */
+    currentPage() {
+      if (!this.$pagination || !this.$pagination.pageNumber) {
+        return 1
+      }
+
+      return this.$pagination.pageNumber
+    },
+  },
+
+  methods: {
+    /* ========================================
+     * 日期格式
+     * ======================================== */
     formatDate(date) {
       if (!date) {
         return ''
@@ -119,398 +179,650 @@ export default {
 
       const day = String(d.getDate()).padStart(2, '0')
 
-      return `${year}.${month}.${day}`
+      return `${year}-${month}-${day}`
     },
 
-    /* =========================
-       分类地址
-       ========================= */
-
-    getCategoryPath(category) {
-      return `/category/${encodeURIComponent(category)}/`
-    },
-
-    /* =========================
-       标签地址
-       ========================= */
-
+    /* ========================================
+     * 标签地址
+     *
+     * 保持我们之前已经修好的方式：
+     * 不 encodeURIComponent
+     * ================================ ======== */
     getTagPath(tag) {
-      return `/tags/${encodeURIComponent(tag)}/`
+      const value = String(tag == null ? '' : tag).trim()
+
+      if (!value) {
+        return '/tags/'
+      }
+
+      return `/tags/${value}/`
+    },
+
+    /* ========================================
+     * 获取文章标签
+     * ======================================== */
+    getPostTags(post) {
+      if (!post || !post.frontmatter) {
+        return []
+      }
+
+      const tags = post.frontmatter.tags
+
+      if (Array.isArray(tags)) {
+        return tags
+      }
+
+      if (typeof tags === 'string') {
+        return [tags]
+      }
+
+      const tag = post.frontmatter.tag
+
+      if (Array.isArray(tag)) {
+        return tag
+      }
+
+      if (typeof tag === 'string') {
+        return [tag]
+      }
+
+      return []
     },
   },
 }
 </script>
 
 <style scoped>
-/* =========================
-   标签页头部
-   ========================= */
+/* ============================================================
+ * 整个标签详情页
+ * ============================================================ */
 
-.tag-hero {
+.tag-detail-page {
   width: 100%;
-
-  padding: 100px 20px 45px;
-
-  box-sizing: border-box;
-}
-
-.tag-hero-inner {
-  max-width: 900px;
+  max-width: 880px;
 
   margin: 0 auto;
 
-  padding: 0 30px;
+  padding: 34px 20px 70px;
 
   box-sizing: border-box;
+
+  color: #2c3e50;
 }
 
-.tag-kicker {
-  margin-bottom: 14px;
+/* ============================================================
+ * 页面头部
+ * ============================================================ */
 
-  color: #aaa;
-
-  font-size: 12px;
-
-  font-weight: 600;
-
-  letter-spacing: 0.18em;
-}
-
-.tag-hero h1 {
+.tag-detail-header {
   margin: 0;
 
-  color: #2c3e50;
+  padding: 0;
 
-  font-size: 2.5rem;
-
-  font-weight: 700;
-
-  line-height: 1.3;
+  text-align: left;
 }
 
-.tag-hero p {
-  margin: 12px 0 0;
+.tag-detail-label {
+  margin-bottom: 10px;
 
-  color: #999;
+  color: #9aa6a0;
 
-  font-size: 14px;
+  font-size: 13px;
 
-  line-height: 1.7;
+  line-height: 1.6;
+
+  letter-spacing: 0.08em;
 }
 
-/* =========================
-   文章区域
-   ========================= */
-
-.tag-posts {
-  width: 100%;
-}
-
-.tag-posts-inner {
-  max-width: 900px;
-
-  margin: 0 auto;
-
-  padding: 0 30px 70px;
-
-  box-sizing: border-box;
-}
-
-/* =========================
-   小标题
-   ========================= */
-
-.tag-section-title {
-  display: flex;
-
-  align-items: center;
-
-  gap: 16px;
-
-  margin-bottom: 20px;
-
-  color: #2c3e50;
-
-  font-size: 15px;
-
-  font-weight: 600;
-}
-
-.tag-section-title::after {
-  content: '';
-
-  flex: 1;
-
-  height: 1px;
-
-  background: #eeeeee;
-}
-
-/* =========================
-   文章列表
-   ========================= */
-
-.tag-post-list {
-  display: flex;
-
-  flex-direction: column;
-}
-
-.tag-post-card {
-  position: relative;
-
-  padding: 27px 0 32px;
-
-  border-bottom: 1px solid #eeeeee;
-
-  transition: padding-left 0.2s ease;
-}
-
-.tag-post-card:first-child {
-  padding-top: 10px;
-}
-
-.tag-post-card:hover {
-  padding-left: 10px;
-}
-
-.tag-post-card::before {
-  content: '';
-
-  position: absolute;
-
-  top: 0;
-
-  left: -12px;
-
-  width: 2px;
-
-  height: 0;
-
-  background: #3eaf7c;
-
-  transition: height 0.2s ease;
-}
-
-.tag-post-card:hover::before {
-  height: 100%;
-}
-
-/* =========================
-   日期
-   ========================= */
-
-.tag-post-date {
-  margin-bottom: 8px;
-
-  color: #aaa;
-
-  font-size: 12px;
-
-  letter-spacing: 0.04em;
-}
-
-/* =========================
-   标题
-   ========================= */
-
-.tag-post-card h2 {
+.tag-detail-title {
   margin: 0;
 
-  font-size: 21px;
+  padding: 0;
 
-  font-weight: 600;
-
-  line-height: 1.5;
-}
-
-.tag-post-card h2 a {
   color: #2c3e50;
 
-  text-decoration: none;
+  font-size: 38px;
 
-  transition: color 0.2s ease;
+  font-weight: 650;
+
+  line-height: 1.25;
+
+  letter-spacing: -0.02em;
 }
 
-.tag-post-card h2 a:hover {
-  color: #3eaf7c;
+.tag-detail-description {
+  margin: 14px 0 0;
 
-  text-decoration: none;
-}
+  padding: 0;
 
-/* =========================
-   分类
-   ========================= */
-
-.tag-post-meta {
-  margin-top: 8px;
-
-  font-size: 12px;
-}
-
-.tag-post-meta a {
-  color: #3eaf7c;
-
-  text-decoration: none;
-}
-
-/* =========================
-   标签
-   ========================= */
-
-.tag-post-tags {
-  display: flex;
-
-  flex-wrap: wrap;
-
-  gap: 8px;
-
-  margin-top: 8px;
-}
-
-.tag-post-tags a {
-  color: #999;
-
-  font-size: 12px;
-
-  text-decoration: none;
-}
-
-.tag-post-tags a:hover {
-  color: #3eaf7c;
-}
-
-/* =========================
-   摘要
-   ========================= */
-
-.tag-post-description {
-  max-width: 700px;
-
-  margin: 13px 0 0;
-
-  color: #777;
+  color: #9a9fa3;
 
   font-size: 14px;
 
   line-height: 1.8;
 }
 
-/* =========================
-   阅读
-   ========================= */
+/* ============================================================
+ * 相关文章区域
+ * ============================================================ */
 
-.tag-post-read {
+.tag-articles {
+  margin-top: 42px;
+}
+
+/* 标题栏 */
+
+.tag-articles-title-row {
+  display: flex;
+
+  align-items: baseline;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 13px;
+
+  border-bottom: 1px solid #eceeef;
+}
+
+.tag-articles-title {
+  margin: 0;
+
+  padding: 0;
+
+  color: #2c3e50;
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  line-height: 1.5;
+}
+
+.tag-articles-count {
+  flex-shrink: 0;
+
+  color: #a2a8ab;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/* ============================================================
+ * 文章列表
+ * ============================================================ */
+
+.tag-articles-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+  margin-top: 20px;
+}
+
+/* ============================================================
+ * 文章卡片
+ *
+ * 重点：
+ * 不使用 transform
+ * 不使用 animation
+ * 不使用 position 动画
+ *
+ * 保证第一次进入页面时
+ * 位置就是最终位置。
+ * ============================================================ */
+
+.tag-article-item {
+  position: relative;
+
+  width: 100%;
+
+  margin: 0;
+
+  padding: 24px 26px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e9edef;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.025);
+
+  overflow: hidden;
+
+  /*
+   * 明确禁止外部动画影响
+   */
+  transform: none !important;
+
+  animation: none !important;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 鼠标悬停 */
+
+.tag-article-item:hover {
+  border-color: #dcebe4;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.055);
+
+  /*
+   * 绝对不移动卡片
+   */
+  transform: none !important;
+}
+
+/* ============================================================
+ * 日期 + 分类
+ * ============================================================ */
+
+.tag-article-meta {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 0;
+
+  margin: 0;
+
+  color: #a0a5a8;
+
+  font-size: 12px;
+
+  line-height: 1.7;
+}
+
+.tag-article-category {
   display: inline-flex;
 
   align-items: center;
 
-  gap: 7px;
+  color: #3eaf7c;
+}
 
-  margin-top: 14px;
+.tag-meta-dot {
+  margin: 0 8px;
 
-  color: #999;
+  color: #c8cdcf;
+}
 
-  font-size: 13px;
+/* ============================================================
+ * 文章标题
+ * ============================================================ */
+
+.tag-article-title {
+  display: block;
+
+  margin: 10px 0 0;
+
+  padding: 0;
+
+  color: #2c3e50;
+
+  font-size: 20px;
+
+  font-weight: 600;
+
+  line-height: 1.55;
 
   text-decoration: none;
 
-  transition: color 0.2s ease, transform 0.2s ease;
+  /*
+   * 禁止任何 inherited transform
+   */
+  transform: none !important;
+
+  animation: none !important;
+
+  transition: color 0.2s ease;
 }
 
-.tag-post-read:hover {
+.tag-article-title:hover {
   color: #3eaf7c;
 
   text-decoration: none;
 
-  transform: translateX(2px);
+  transform: none !important;
 }
 
-/* =========================
-   空状态
-   ========================= */
+/* ============================================================
+ * 文章描述
+ * ============================================================ */
 
-.tag-empty {
-  width: 100%;
+.tag-article-description {
+  margin: 11px 0 0;
+
+  padding: 0;
+
+  color: #747c81;
+
+  font-size: 14px;
+
+  line-height: 1.9;
+
+  word-break: break-word;
 }
 
-.tag-empty-inner {
-  max-width: 900px;
+/* ============================================================
+ * 标签
+ * ============================================================ */
 
-  margin: 0 auto;
+.tag-article-tags {
+  display: flex;
 
-  padding: 40px 30px 80px;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  margin: 15px 0 0;
+}
+
+.tag-article-tag {
+  display: inline-flex;
+
+  align-items: center;
+
+  min-height: 24px;
+
+  padding: 2px 9px;
 
   box-sizing: border-box;
+
+  border: 1px solid #edf0ef;
+
+  border-radius: 5px;
+
+  background: #f7f9f8;
+
+  color: #8b9490;
+
+  font-size: 11px;
+
+  line-height: 1.6;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+
+  transform: none !important;
+
+  animation: none !important;
+}
+
+.tag-article-tag:hover {
+  border-color: #d7e9df;
+
+  background: #f2f9f5;
+
+  color: #3eaf7c;
+
+  text-decoration: none;
+
+  transform: none !important;
+}
+
+/* ============================================================
+ * 阅读全文
+ * ============================================================ */
+
+.tag-article-read {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 17px;
+
+  color: #8d9792;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+  text-decoration: none;
+
+  transform: none !important;
+
+  animation: none !important;
+
+  transition: color 0.2s ease;
+}
+
+.tag-article-read span {
+  display: inline-block;
+
+  transform: none !important;
+}
+
+.tag-article-read:hover {
+  color: #3eaf7c;
+
+  text-decoration: none;
+
+  transform: none !important;
+}
+
+/* ============================================================
+ * 空状态
+ * ============================================================ */
+
+.tag-empty {
+  margin-top: 22px;
+
+  padding: 44px 20px;
+
+  border: 1px solid #edf0ef;
+
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.72);
 
   text-align: center;
 }
 
 .tag-empty-title {
-  margin-bottom: 15px;
+  color: #7f8985;
 
-  color: #999;
+  font-size: 15px;
 
-  font-size: 14px;
+  line-height: 1.7;
 }
 
-.tag-empty-link {
-  color: #3eaf7c;
+.tag-empty-description {
+  margin-top: 8px;
 
-  font-size: 13px;
+  color: #b0b5b7;
+
+  font-size: 12px;
+
+  line-height: 1.8;
+}
+
+/* ============================================================
+ * 分页
+ * ============================================================ */
+
+.tag-pagination {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 16px;
+
+  margin-top: 30px;
+}
+
+.tag-pagination-button {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-width: 76px;
+
+  min-height: 32px;
+
+  padding: 0 12px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #e5ebe8;
+
+  border-radius: 16px;
+
+  background: #f8fbf9;
+
+  color: #6f7d76;
+
+  font-size: 12px;
+
+  line-height: 1;
 
   text-decoration: none;
+
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+
+  transform: none !important;
+
+  animation: none !important;
 }
 
-.tag-empty-link:hover {
-  text-decoration: underline;
+.tag-pagination-button:hover {
+  border-color: #cfe5d9;
+
+  background: #f2f9f5;
+
+  color: #3eaf7c;
+
+  text-decoration: none;
+
+  transform: none !important;
 }
 
-/* =========================
-   手机
-   ========================= */
+.tag-pagination-current {
+  color: #a2aaa7;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+}
+
+/* ============================================================
+ * 桌面端进一步控制
+ * ============================================================ */
+
+@media (min-width: 1201px) {
+  .tag-detail-page {
+    max-width: 880px;
+
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* ============================================================
+ * 手机端
+ * ============================================================ */
 
 @media (max-width: 719px) {
-  .tag-hero {
-    padding: 82px 18px 40px;
+  .tag-detail-page {
+    max-width: 100%;
+
+    padding: 22px 18px 55px;
   }
 
-  .tag-hero-inner {
-    padding: 0 2px;
+  .tag-detail-label {
+    margin-bottom: 8px;
+
+    font-size: 12px;
   }
 
-  .tag-hero h1 {
-    font-size: 2rem;
+  .tag-detail-title {
+    font-size: 30px;
+
+    line-height: 1.3;
   }
 
-  .tag-posts-inner {
-    padding: 0 18px 50px;
-  }
+  .tag-detail-description {
+    margin-top: 11px;
 
-  .tag-post-card {
-    padding: 23px 0 28px;
-  }
-
-  .tag-post-card:hover {
-    padding-left: 0;
-  }
-
-  .tag-post-card::before {
-    display: none;
-  }
-
-  .tag-post-card h2 {
-    font-size: 19px;
-  }
-
-  .tag-post-description {
     font-size: 13px;
 
-    line-height: 1.75;
+    line-height: 1.8;
   }
 
-  .tag-empty-inner {
-    padding: 30px 18px 55px;
+  .tag-articles {
+    margin-top: 30px;
+  }
+
+  .tag-articles-title-row {
+    padding-bottom: 11px;
+  }
+
+  .tag-articles-title {
+    font-size: 18px;
+  }
+
+  .tag-articles-count {
+    font-size: 12px;
+  }
+
+  .tag-articles-list {
+    gap: 14px;
+
+    margin-top: 16px;
+  }
+
+  .tag-article-item {
+    padding: 19px 17px;
+
+    border-radius: 9px;
+  }
+
+  .tag-article-title {
+    margin-top: 8px;
+
+    font-size: 18px;
+
+    line-height: 1.55;
+  }
+
+  .tag-article-description {
+    margin-top: 9px;
+
+    font-size: 13px;
+
+    line-height: 1.85;
+  }
+
+  .tag-article-tags {
+    margin-top: 12px;
+
+    gap: 6px;
+  }
+
+  .tag-article-read {
+    margin-top: 14px;
+  }
+
+  .tag-pagination {
+    margin-top: 24px;
+
+    gap: 10px;
   }
 }
 </style>
