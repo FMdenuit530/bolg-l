@@ -46,6 +46,7 @@ a
 .site-content .tags-page,
 .site-content .tag-hero,
 .site-content .tag-posts,
+.site-content .archive-page,
 .site-content .about-page
   position relative
   z-index 2
@@ -150,55 +151,6 @@ a
 
 
 /* ============================================================
- * 搜索框
- * ============================================================ */
-
-.navbar .search-box
-  margin-right 12px
-
-
-.navbar .search-box input
-  width 180px
-  height 34px
-
-  padding 0 14px
-
-  box-sizing border-box
-
-  border 1px solid #e5e7eb
-  border-radius 18px
-
-  background rgba(255, 255, 255, .8)
-
-  color #555
-
-  font-size 13px
-
-  transition width .25s ease, border-color .2s ease, box-shadow .2s ease
-
-
-.navbar .search-box input::placeholder
-  color #aaa
-
-
-.navbar .search-box input:focus
-  width 220px
-
-  border-color #cfe9dc
-
-  outline none
-
-  box-shadow 0 0 0 3px rgba(62, 175, 124, .08)
-
-
-.navbar .search-box .suggestions
-  border 1px solid #eeeeee
-  border-radius 10px
-
-  box-shadow 0 10px 30px rgba(0, 0, 0, .08)
-
-
-/* ============================================================
  * 桌面导航
  * ============================================================ */
 
@@ -217,14 +169,6 @@ a
   .navbar .nav-links a
     margin 0 6px
     font-size 13px
-
-
-  .navbar .search-box input
-    width 145px
-
-
-  .navbar .search-box input:focus
-    width 180px
 
 
 /* ============================================================
@@ -1423,6 +1367,7 @@ a
   .tags-page,
   .tag-hero,
   .tag-posts,
+  .archive-page,
   .about-page
     padding-left 30px
 
@@ -1484,18 +1429,6 @@ a
 
   .navbar .nav-item
     font-size 14px
-
-
-  .navbar .search-box
-    margin-right 5px
-
-    transform scale(.92)
-
-    transform-origin right center
-
-
-  .navbar .search-box input
-    width 110px
 
 
   /* ----------------------------------------------------------
@@ -2068,7 +2001,9 @@ a
 
   .branch-background
     opacity .72
-    /* ============================================================
+
+
+/* ============================================================
  * 标签详情页：相关文章区域优化
  * ============================================================ */
 
@@ -2077,7 +2012,9 @@ a
   padding 0 4px 30px
   box-sizing border-box
 
+
 /* “相关文章”标题 */
+
 .tag-posts h2,
 .tag-posts h3
   margin-top 0
@@ -2086,14 +2023,16 @@ a
   color #2c3e50
   line-height 1.5
 
+
 /* 文章卡片与标题拉开一点距离 */
+
 .tag-posts .post-card,
 .tag-posts .article-card
   margin-top 16px
 
+
 /* 连续卡片之间再留一点呼吸空间 */
+
 .tag-posts .post-card + .post-card,
 .tag-posts .article-card + .article-card
   margin-top 18px
-
-
