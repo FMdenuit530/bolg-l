@@ -1,0 +1,9 @@
+# Node.js 依赖
+node_modules/
+
+# VuePress 构建产物
+docs/.vuepress/dist/
+
+# VuePress 临时文件
+docs/.vuepress/.temp/
+docs/.vuepress/.cache/
