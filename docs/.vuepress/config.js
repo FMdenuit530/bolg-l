@@ -34,6 +34,20 @@ module.exports = {
    */
   head: [
     [
+      'link',
+      {
+        rel: 'icon',
+        href: '/favicon.png',
+      },
+    ],
+    [
+      'link',
+      {
+        rel: 'apple-touch-icon',
+        href: '/apple-touch-icon.png',
+      },
+    ],
+    [
       'meta',
       {
         name: 'theme-color',
@@ -189,6 +203,8 @@ module.exports = {
    * ========================================
    */
   themeConfig: {
+    logo: '/logo.png',
+
     repo: 'FMdenuit530/bolg-l',
     repoLabel: 'GitHub',
 

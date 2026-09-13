@@ -73,15 +73,73 @@ a
   box-shadow 0 2px 12px rgba(0, 0, 0, .025)
 
 
-.navbar .site-name
+/* ============================================================
+ * 导航栏 Logo + 博客名称
+ * ============================================================ */
+
+/* ============================================================
+ * Logo + 博客名称
+ * VuePress 1 默认结构：
+ *
+ * .home-link
+ *   ├── .logo
+ *   └── .site-name
+ * ============================================================ */
+
+/* ============================================================
+ * Logo + 博客名称
+ * ============================================================ */
+
+.navbar .home-link
+  display flex !important
+  align-items center !important
+
+  height 60px !important
+
+  margin-top: -2px
+
+  white-space nowrap !important
+  text-decoration none !important
+
+  flex-shrink 0
+
+.navbar .home-link .logo
+  display block !important
+
+  width 36px !important
+  height 36px !important
+
+  margin-right 10px !important
+
+  flex: 0 0 36px !important
+
+  object-fit contain
+
+  border-radius 50%
+
+.navbar .home-link .site-name
+  display block !important
+
+  margin 0 !important
+  padding 0 !important
+
   color #2c3e50
 
-  font-size 17px
-  font-weight 600
+  font-size 19px !important
+  font-weight 650
 
-  letter-spacing .02em
+  line-height 1 !important
+  white-space nowrap !important
+
+  letter-spacing .01em
 
   transition color .2s ease
+
+.navbar .home-link:hover .site-name
+  color #3eaf7c
+
+.navbar .site-name:hover
+  color #3eaf7c
 
 
 .navbar .site-name:hover
@@ -1398,17 +1456,22 @@ a
 
     padding 0 16px
 
+.navbar .home-link
+  height 60px
 
-  .navbar .site-name
-    max-width 130px
+.navbar .home-link .logo
+  width 30px !important
+  height 30px !important
+  flex-basis 30px !important
+  margin-right 8px !important
 
-    overflow hidden
+.navbar .home-link .site-name
+  font-size 16px
+  max-width 150px
 
-    text-overflow ellipsis
-
-    white-space nowrap
-
-    font-size 16px
+  overflow hidden
+  text-overflow ellipsis
+  white-space nowrap
 
 
   .navbar .logo
@@ -2036,3 +2099,27 @@ a
 .tag-posts .post-card + .post-card,
 .tag-posts .article-card + .article-card
   margin-top 18px
+  // ========================================
+// Logo
+// ========================================
+
+.navbar .site-name
+  display flex
+  align-items center
+
+.navbar .logo
+  width 36px
+  height 36px
+  margin-right 10px
+  object-fit contain
+  border-radius 50%
+  transition transform .2s ease
+
+.navbar .logo:hover
+  transform scale(1.05)
+
+@media (max-width: 719px)
+  .navbar .logo
+    width 32px
+    height 32px
+    margin-right 8px
